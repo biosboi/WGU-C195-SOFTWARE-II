@@ -4,12 +4,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 public class Helpers {
-    public Connection db = JDBC.getConnection();
+    private Connection db = JDBC.getConnection();
 
     /**
      * takes String input and displays that string in an alert.
@@ -45,9 +46,11 @@ public class Helpers {
      * @return associated contact name
      */
     public String getContactName(int contactId) throws SQLException {
-        String SQLStatement = "SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactId;
-        JDBC.makePreparedStatement(SQLStatement, db);
-        PreparedStatement contactName = JDBC.getPreparedStatement();
+        Statement stmt = db.createStatement();
+        String query = "SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactId;
+        JDBC.makePreparedStatement(query, db);
+        ResultSet rs = stmt.executeQuery(query);
+        contactName.
         return contactName;
     }
 
@@ -57,7 +60,6 @@ public class Helpers {
      * @return associated contact ID
      */
     public int getContactName(String contactName) throws SQLException  {
-        db.
         int contactId = 0;
         return contactId;
     }
@@ -68,12 +70,12 @@ public class Helpers {
 
     }
     // takes First and Second level country data and turn it into a Division ID & Vice Versa.
-    public void () {
+    public void  () {
 
     }
 
     // converts between all the timezones. UTC -> Local, UTC -> Eastern, System -> UTC etc. This will save you lots of time and headache. Make these, test these and you will save the hardest part of your project. Use LocalDateTime objects and ZoneID’s to do this. There are resources online.
-    public void () {
+    public void timeZoneConvert() {
 
     }
 }
