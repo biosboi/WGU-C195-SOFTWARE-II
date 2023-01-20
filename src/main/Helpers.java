@@ -1,22 +1,74 @@
 package main;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.time.ZoneId;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class Helpers {
+public class Helpers implements Initializable {
+    /**
+     * Handle to database connection
+     */
     private static final Connection db = JDBC.getConnection();
+    public static Class<? extends Helpers> self = null;
+
+    /**
+     * Initialize Helper Controller
+     * @param url init url reference
+     * @param resourceBundle init resources reference
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        self = getClass();
+    }
+
+    /**
+     * Retrieve Zone ID
+     * @return Current Zone ID
+     */
+    public static ZoneId getZoneID() { return ZoneId.systemDefault(); }
+
+    /**
+     * Sets locale up to be used by other classes for language translation
+     */
+    public static void setLocale() {
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(locale);
+    }
+
+    /**
+     * Helper menu switcher
+     * @param event Event to engage menu switch
+     * @param newMenu String value of new menu .fxml file to open
+     * @throws IOException Handle if file opening error occurs
+     */
+    public static void openMenu(ActionEvent event, String newMenu) throws IOException {
+        Parent parent = FXMLLoader.load(Class.class.getClassLoader().getResource(newMenu));
+        Scene scene = new Scene(parent);
+        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+    }
 
     /**
      * takes String input and displays that string in an alert.
      * @param message output of error screen
      */
-    public void WarningMessage(String message) {
+    public static void WarningMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("WARNING");
         alert.setContentText(message);
@@ -27,7 +79,7 @@ public class Helpers {
      * takes String input and displays that string in a confirmation message.
      * @param message output of confirmation screen
      */
-    public boolean ConfirmationMessage(String message) {
+    public static boolean ConfirmationMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("CONFIRMATION");
         alert.setContentText(message);
@@ -41,8 +93,12 @@ public class Helpers {
         return false;
     }
 
-    // converts between all the timezones. UTC -> Local, UTC -> Eastern, System -> UTC etc. This will save you lots of time and headache. Make these, test these and you will save the hardest part of your project. Use LocalDateTime objects and ZoneID’s to do this. There are resources online.
-    public void timeZoneConvert() {
+    /**
+     * Convert one time zone to another
+     * @param oldTime Previous time zone
+     * @param newTime Updated time zone
+     */
+    public void timeZoneConvert(String oldTime, String newTime) {
 
     }
 }
