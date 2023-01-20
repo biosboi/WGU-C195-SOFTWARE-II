@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.Optional;
 
 public class Helpers {
-    private Connection db = JDBC.getConnection();
+    private static final Connection db = JDBC.getConnection();
 
     /**
      * takes String input and displays that string in an alert.
@@ -38,40 +38,7 @@ public class Helpers {
         } else if (result.isPresent() && result.get() != ButtonType.OK) {
             return false;
         }
-    }
-
-    /**
-     * Retrieve contact name based on contact ID
-     * @param contactId find name with this id
-     * @return associated contact name
-     */
-    public String getContactName(int contactId) throws SQLException {
-        Statement stmt = db.createStatement();
-        String query = "SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactId;
-        JDBC.makePreparedStatement(query, db);
-        ResultSet rs = stmt.executeQuery(query);
-        contactName.
-        return contactName;
-    }
-
-    /**
-     * Retrieve contact ID based on contact name
-     * @param contactName find name with this id
-     * @return associated contact ID
-     */
-    public int getContactName(String contactName) throws SQLException  {
-        int contactId = 0;
-        return contactId;
-    }
-
-    // take a username and change it to UserID & vice versa.
-
-    public void () {
-
-    }
-    // takes First and Second level country data and turn it into a Division ID & Vice Versa.
-    public void  () {
-
+        return false;
     }
 
     // converts between all the timezones. UTC -> Local, UTC -> Eastern, System -> UTC etc. This will save you lots of time and headache. Make these, test these and you will save the hardest part of your project. Use LocalDateTime objects and ZoneID’s to do this. There are resources online.
