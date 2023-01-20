@@ -2,7 +2,6 @@ package main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,30 +10,13 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.time.ZoneId;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
-public class Helpers implements Initializable {
-    /**
-     * Handle to database connection
-     */
+public class Helpers {
     private static final Connection db = JDBC.getConnection();
-    public static Class<? extends Helpers> self = null;
-
-    /**
-     * Initialize Helper Controller
-     * @param url init url reference
-     * @param resourceBundle init resources reference
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        self = getClass();
-    }
 
     /**
      * Retrieve Zone ID
@@ -57,7 +39,7 @@ public class Helpers implements Initializable {
      * @throws IOException Handle if file opening error occurs
      */
     public static void openMenu(ActionEvent event, String newMenu) throws IOException {
-        Parent parent = FXMLLoader.load(Class.class.getClassLoader().getResource(newMenu));
+        Parent parent = FXMLLoader.load(Helpers.class.getResource(newMenu));
         Scene scene = new Scene(parent);
         Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
         window.setScene(scene);
@@ -85,12 +67,7 @@ public class Helpers implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            return true;
-        } else if (result.isPresent() && result.get() != ButtonType.OK) {
-            return false;
-        }
-        return false;
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 
     /**

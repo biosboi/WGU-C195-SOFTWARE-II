@@ -1,4 +1,4 @@
-package DBControllers;
+package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,8 +27,8 @@ public class CustomersDB {
             int customerID = rs.getInt("Customer_ID");
             String customerName = rs.getString("Customer_Name");
             String address = rs.getString("Address");
-            int postalCode = rs.getInt("Postal_Code");
-            int phone = rs.getInt("Phone");
+            String postalCode = rs.getString("Postal_Code");
+            String phone = rs.getString("Phone");
             int divisionID = rs.getInt("Division_ID");
             Customers customer = new Customers(customerID, customerName, address, postalCode, phone, divisionID);
             allCustomersList.add(customer);

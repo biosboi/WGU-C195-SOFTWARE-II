@@ -1,4 +1,4 @@
-package DBControllers;
+package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,5 +67,18 @@ public class UsersDB {
             userId = rs.getInt("User_ID");
         }
         return userId;
+    }
+
+    public static int loginVerification(String usr, String pwd) throws SQLException {
+        Statement stmt = db.createStatement();
+        String query = "SELECT User_ID FROM users WHERE User_Name = '" + usr + "'AND Password = '" + pwd + "'";
+        JDBC.makePreparedStatement(query, db);
+        stmt.executeQuery(query);
+        ResultSet rs = stmt.executeQuery(query);
+        int userID = -1;
+        while (rs.next()) {
+            userID = rs.getInt("User_ID");
+        }
+        return Math.max(userID, -1);
     }
 }

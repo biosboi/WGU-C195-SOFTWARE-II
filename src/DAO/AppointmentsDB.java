@@ -1,4 +1,4 @@
-package DBControllers;
+package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,5 +37,11 @@ public class AppointmentsDB {
             allAppointmentsList.add(appointment);
         }
         return allAppointmentsList;
+    }
+    public static boolean newAppointment() throws SQLException {
+        String query = "SELECT * FROM appointments";
+        PreparedStatement ps = db.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        return true;
     }
 }
