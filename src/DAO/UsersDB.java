@@ -69,6 +69,13 @@ public class UsersDB {
         return userId;
     }
 
+    /**
+     * Handles login verification, returns -1 if credentials are bad, otherwise returns user ID
+     * @param usr username to check against
+     * @param pwd password to check against
+     * @return returns userID if valid, -1 if invalid
+     * @throws SQLException SQL exception handler
+     */
     public static int loginVerification(String usr, String pwd) throws SQLException {
         Statement stmt = db.createStatement();
         String query = "SELECT User_ID FROM users WHERE User_Name = '" + usr + "'AND Password = '" + pwd + "'";

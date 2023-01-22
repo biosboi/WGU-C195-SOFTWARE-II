@@ -1,5 +1,8 @@
 package model;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.Time;
 
 /**
@@ -8,9 +11,11 @@ import java.sql.Time;
  */
 
 public class Appointments {
+    private ObservableList<Appointments> appointmentList = FXCollections.observableArrayList();
     public int appointmentID;
     public String title;
     public String description;
+    public String location;
     public String type;
     public Time appointmentStart;
     public Time appointmentEnd;
@@ -29,10 +34,11 @@ public class Appointments {
      * @param userID FK
      * @param contactID FK
      */
-    public Appointments (int appointmentID, String title, String description, String type, Time appointmentStart, Time appointmentEnd, int customerID, int userID, int contactID) {
+    public Appointments (int appointmentID, String title, String description, String location, String type, Time appointmentStart, Time appointmentEnd, int customerID, int userID, int contactID) {
         this.appointmentID = appointmentID;
         this.title = title;
         this.description = description;
+        this.location = location;
         this.type = type;
         this.appointmentStart = appointmentStart;
         this.appointmentEnd = appointmentEnd;
@@ -55,6 +61,11 @@ public class Appointments {
      * @return Appointment Description
      */
     public String getDescription() { return description; }
+
+    /**
+     * @return Appointment Location
+     */
+    public String getLocation() { return location; }
 
     /**
      * @return Appointment Type
@@ -85,4 +96,18 @@ public class Appointments {
      * @return Contact ID
      */
     public int getContactID() { return contactID; }
+
+     /**
+     * Generates a new ID which is incremented from previous known ID's
+     * @return lastMaxId
+     */
+    public int newAppointmentID() {
+        int lastMaxId = 0;
+        for(Appointments a : appointmentList) {
+            if (a.getAppointmentID() > lastMaxId) {
+                lastMaxId = a.getAppointmentID();
+            }
+        }
+        return ++lastMaxId;
+    }
 }

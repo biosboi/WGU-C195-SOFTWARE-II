@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.MainMenuController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="300.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenuController">
+   <children>
+      <Label layoutX="100.0" layoutY="28.0" text="Main Menu">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <Button fx:id="customerMenuButton" layoutX="87.0" layoutY="75.0" mnemonicParsing="false" onAction="#customerMenu" text="Customer Menu" />
+      <Button fx:id="appointmentsMenuButton" layoutX="77.0" layoutY="125.0" mnemonicParsing="false" onAction="#appointmentsMenu" text="Appointment Menu" />
+      <Button fx:id="reportMenuButton" layoutX="93.0" layoutY="175.0" mnemonicParsing="false" onAction="#reportMenu" text="Report Menu" />
+      <Button fx:id="logoutButton" layoutX="110.0" layoutY="225.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+   </children>
 </AnchorPane>

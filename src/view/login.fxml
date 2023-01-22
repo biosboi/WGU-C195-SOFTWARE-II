@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane prefHeight="266.0" prefWidth="260.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.loginController">
+<Pane prefHeight="300.0" prefWidth="290.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.loginController">
    <children>
       <Label fx:id="usernameLabel" layoutX="15.0" layoutY="70.0" text="Username" />
       <Label fx:id="passwordLabel" layoutX="15.0" layoutY="130.0" text="Password" />
@@ -13,7 +13,7 @@
       <Button fx:id="loginButton" layoutX="15.0" layoutY="180.0" mnemonicParsing="false" onAction="#loginButton_click" text="Login" />
       <Button fx:id="exitButton" layoutX="120.0" layoutY="180.0" mnemonicParsing="false" onAction="#exitButton_click" text="Exit" />
       <TextField fx:id="usernameField" layoutX="120.0" layoutY="70.0" prefHeight="25.0" prefWidth="151.0" />
-      <TextField fx:id="passwordField" layoutX="120.0" layoutY="130.0" prefHeight="25.0" prefWidth="151.0" />
+      <PasswordField fx:id="passwordField" layoutX="120.0" layoutY="130.0" prefHeight="25.0" prefWidth="151.0" />
       <Label fx:id="titleLabel" layoutX="95.0" layoutY="28.0" text="Login Form">
          <font>
             <Font name="System Bold" size="13.0" />

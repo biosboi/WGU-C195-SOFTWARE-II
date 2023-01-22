@@ -1,10 +1,15 @@
 package model;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 /**
  * Customers model
  * @author William Nathan
  */
 
 public class Customers {
+    private ObservableList<Customers> customersList = FXCollections.observableArrayList();
     public int customerID;
     public String customerName;
     public String address;
@@ -58,4 +63,18 @@ public class Customers {
      * @return Division ID of Customer
      */
     public int getDivisionID() { return divisionID; }
+
+    /**
+     * Generates a new ID which is incremented from previous known ID's
+     * @return lastMaxId
+     */
+    public int newCustomerID() {
+        int lastMaxId = 0;
+        for(Customers c : customersList) {
+            if (c.getCustomerID() > lastMaxId) {
+                lastMaxId = c.getCustomerID();
+            }
+        }
+        return ++lastMaxId;
+    }
 }

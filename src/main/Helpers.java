@@ -10,14 +10,11 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Optional;
 
 public class Helpers {
-    private static final Connection db = JDBC.getConnection();
-
     /**
      * Retrieve Zone ID
      * @return Current Zone ID
@@ -65,7 +62,6 @@ public class Helpers {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("CONFIRMATION");
         alert.setContentText(message);
-        alert.showAndWait();
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == ButtonType.OK;
     }
@@ -76,6 +72,10 @@ public class Helpers {
      * @param newTime Updated time zone
      */
     public void timeZoneConvert(String oldTime, String newTime) {
+
+    }
+
+    public void loginLog() {
 
     }
 }
