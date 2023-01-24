@@ -26,11 +26,19 @@ public class Helpers {
      * @return ResultSet of response from DB
      * @throws SQLException SQL exception handler
      */
-    public static ResultSet makeQuery(String dbQuery) throws SQLException {
+    public static ResultSet DBQuery(String dbQuery) throws SQLException {
         PreparedStatement ps = db.prepareStatement(dbQuery);
-        ps.executeQuery();
         ResultSet rs;
         return rs = ps.executeQuery();
+    }
+
+    /**
+     * @param dbQuery String statement to push to DB
+     * @throws SQLException SQL exception handler
+     */
+    public static void DBExec(String dbQuery) throws SQLException {
+        PreparedStatement ps = db.prepareStatement(dbQuery);
+        ps.execute();
     }
 
     /**

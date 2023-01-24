@@ -25,7 +25,7 @@ public class CustomersDB {
      */
     public static ObservableList<Customers> getAllCustomers() throws SQLException {
         ObservableList<Customers> allCustomersList = FXCollections.observableArrayList();
-        ResultSet rs = Helpers.makeQuery("SELECT * FROM customers");
+        ResultSet rs = Helpers.DBQuery("SELECT * FROM customers");
         while (rs.next()) {
             int customerID = rs.getInt("Customer_ID");
             String customerName = rs.getString("Customer_Name");
@@ -44,8 +44,8 @@ public class CustomersDB {
      * @throws SQLException SQL exception handler
      */
     public static void addCustomer(Customers c) throws SQLException {
-        String queryBuild = c.getCustomerID() + ", " + c.getCustomerName() + ", " + c.getAddress() + ", " + c.getPostalCode() + ", " + c.getPhone() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + c.getDivisionID();
-        Helpers.makeQuery("INSERT INTO customers VALUES (" + queryBuild + ");");
+        String queryBuild = c.getCustomerID() + ", '" + c.getCustomerName() + "', '" + c.getAddress() + "', '" + c.getPostalCode() + "', '" + c.getPhone() + "', NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + c.getDivisionID();
+        Helpers.DBExec("INSERT INTO customers VALUES (" + queryBuild + ");");
     }
 
     /**
@@ -56,7 +56,7 @@ public class CustomersDB {
      */
     public static List<Integer> getCustomersAppointments(int customerID) throws SQLException {
         List<Integer> customerAppointmentList = new ArrayList<>();
-        ResultSet rs = Helpers.makeQuery("SELECT Appointment_ID FROM appointments WHERE Customer_ID = " + customerID);
+        ResultSet rs = Helpers.DBQuery("SELECT Appointment_ID FROM appointments WHERE Customer_ID = " + customerID);
         while (rs.next()) {
             customerAppointmentList.add(rs.getInt("Appointment_ID"));
         }
@@ -70,22 +70,21 @@ public class CustomersDB {
      * @throws SQLException SQL exception handler
      */
     public static boolean deleteCustomer(int customerID) throws SQLException {
-        if (Helpers.ConfirmationMessage("This customer currently has existing appointments. \nWould you like to delete those appointments?")) {
-            List<Integer> customerApts = getCustomersAppointments(customerID);
-            if (!customerApts.isEmpty()) {
+        List<Integer> customerApts = getCustomersAppointments(customerID);
+        if (!customerApts.isEmpty()) {
+            if (Helpers.ConfirmationMessage("This customer currently has existing appointments. \nWould you like to delete those appointments?")) {
                 for (int a : customerApts) {
                     if (!AppointmentsDB.deleteAppointment(a)) {
+                        Helpers.WarningMessage("Error deleting appointments.\nTry manual deletion.");
                         return false;
                     }
                 }
             }
-            try {
-                Helpers.makeQuery("DELETE FROM customers WHERE Customer_ID = " + customerID);
-                return true;
-            } catch (SQLException e) {
-                return false;
-            }
-        } else {
+        }
+        try {
+            Helpers.DBExec("DELETE FROM customers WHERE Customer_ID = " + customerID);
+            return true;
+        } catch (SQLException e) {
             return false;
         }
     }

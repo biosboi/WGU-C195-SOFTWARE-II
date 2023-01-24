@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import main.Helpers;
+import main.JDBC;
+import main.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -81,20 +83,24 @@ public class loginController implements Initializable {
         String password = passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
+            Logger.log(username, false);
             Helpers.WarningMessage(emptyCreds);
         } else if (UsersDB.loginVerification(username, password) > -1) {
+            Logger.log(username, true);
             Helpers.openMenu(click, "../view/mainMenu.fxml");
         } else {
+            Logger.log(username, false);
             Helpers.WarningMessage(badCreds);
         }
     }
 
     /**
      * Close menu / exit program
-     * @param buttonClick cancel button click
+     * @param click cancel button click
      */
-    public void exitButton_click(ActionEvent buttonClick) {
-        Stage stage = (Stage) ((Node) buttonClick.getSource()).getScene().getWindow();
+    public void exitButton_click(ActionEvent click) {
+        JDBC.closeConnection();
+        Stage stage = (Stage) ((Node) click.getSource()).getScene().getWindow();
         stage.close();
     }
 

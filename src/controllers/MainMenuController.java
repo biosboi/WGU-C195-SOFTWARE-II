@@ -2,8 +2,11 @@ package controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 import main.Helpers;
+import main.JDBC;
 
 import java.io.IOException;
 
@@ -21,6 +24,8 @@ public class MainMenuController {
     public Button reportMenuButton;
     @FXML
     public Button logoutButton;
+    @FXML
+    public Button exitButton;
 
     /**
      * Opens customer menu
@@ -49,4 +54,15 @@ public class MainMenuController {
      * @throws IOException Handle menu open exception
      */
     public void logout(ActionEvent click) throws IOException { Helpers.openMenu(click, "../view/login.fxml"); }
+
+    /**
+     * Exit program
+     * @param click Execute on button click
+     * @throws IOException Handle menu open exception
+     */
+    public void exit(ActionEvent click) {
+        JDBC.closeConnection();
+        Stage stage = (Stage) ((Node) click.getSource()).getScene().getWindow();
+        stage.close();
+    }
 }

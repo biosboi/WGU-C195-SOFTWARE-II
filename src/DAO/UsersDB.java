@@ -19,7 +19,7 @@ public class UsersDB {
      */
     public static ObservableList<Users> getAllUsers() throws SQLException {
         ObservableList<Users> allUsersList = FXCollections.observableArrayList();
-        ResultSet rs = Helpers.makeQuery("SELECT * FROM users");
+        ResultSet rs = Helpers.DBQuery("SELECT * FROM users");
         while (rs.next()) {
             int userId = rs.getInt("User_ID");
             String name = rs.getString("Name");
@@ -37,7 +37,7 @@ public class UsersDB {
      */
     public static String getUsername(int UserID) throws SQLException {
         String userName = "";
-        ResultSet rs = Helpers.makeQuery("SELECT User_Name FROM users WHERE User_ID = " + UserID);
+        ResultSet rs = Helpers.DBQuery("SELECT User_Name FROM users WHERE User_ID = " + UserID);
         while (rs.next()) {
             userName = rs.getString("User_Name");
         }
@@ -51,7 +51,7 @@ public class UsersDB {
      */
     public static int getUserID(String UserName) throws SQLException {
         int userId = 0;
-        ResultSet rs = Helpers.makeQuery("SELECT User_ID FROM users WHERE User_Name = " + UserName);
+        ResultSet rs = Helpers.DBQuery("SELECT User_ID FROM users WHERE User_Name = " + UserName);
         while (rs.next()) {
             userId = rs.getInt("User_ID");
         }
@@ -66,7 +66,7 @@ public class UsersDB {
      * @throws SQLException SQL exception handler
      */
     public static int loginVerification(String usr, String pwd) throws SQLException {
-        ResultSet rs = Helpers.makeQuery("SELECT User_ID FROM users WHERE User_Name = '" + usr + "'AND Password = '" + pwd + "'");
+        ResultSet rs = Helpers.DBQuery("SELECT User_ID FROM users WHERE User_Name = '" + usr + "'AND Password = '" + pwd + "'");
         int userID = -1;
         while (rs.next()) {
             userID = rs.getInt("User_ID");

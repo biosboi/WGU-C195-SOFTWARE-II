@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="430.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.customerMenuController">
+<AnchorPane prefHeight="504.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.customerMenuController">
    <children>
       <TableView fx:id="customerTable" layoutX="13.0" layoutY="49.0" prefHeight="298.0" prefWidth="670.0">
         <columns>
@@ -13,9 +13,9 @@
             <TableColumn fx:id="customerTable_Address" prefWidth="134.6667022705078" text="Address" />
             <TableColumn fx:id="customerTable_PostalCode" minWidth="0.0" prefWidth="71.33331298828125" text="Postal Code" />
             <TableColumn fx:id="customerTable_Phone" minWidth="4.33331298828125" prefWidth="103.6666259765625" text="Phone" />
-            <TableColumn fx:id="customerTable_comboBox" prefWidth="170">
+            <TableColumn fx:id="customerTable_comboBox" prefWidth="170" text="Country / Division ID">
                <graphic>
-                  <ComboBox fx:id="customerTable_comboBox_switch" onAction="#switchComboBox" prefHeight="25.0" prefWidth="170.0" promptText="Division ID" visibleRowCount="2" />
+                  <ComboBox fx:id="customerTable_comboBox_switch" onAction="#switchComboBox" prefHeight="25.0" prefWidth="170.0" promptText="Country" />
                </graphic></TableColumn>
         </columns>
       </TableView>
@@ -24,8 +24,21 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Button fx:id="returnButton" layoutX="534.0" layoutY="396.0" mnemonicParsing="false" onAction="#previousMenu" text="Return" />
-      <Button fx:id="removeButton" layoutX="60.0" layoutY="362.0" mnemonicParsing="false" onAction="#removeCustomer" text="Remove" />
-      <Button fx:id="addButton" layoutX="14.0" layoutY="362.0" mnemonicParsing="false" onAction="#addCustomer" text="Add" />
+      <Button fx:id="returnButton" layoutX="634.0" layoutY="467.0" mnemonicParsing="false" onAction="#previousMenu" text="Return" />
+      <Button fx:id="removeButton" layoutX="13.0" layoutY="358.0" mnemonicParsing="false" onAction="#removeCustomer" text="Remove" />
+      <Button fx:id="addButton" layoutX="14.0" layoutY="465.0" mnemonicParsing="false" onAction="#addCustomer" text="Add" />
+      <TextField fx:id="divisionID_field" layoutX="425.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
+      <TextField fx:id="phone_field" layoutX="339.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
+      <TextField fx:id="postalCode_field" layoutX="253.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
+      <TextField fx:id="address_field" layoutX="133.0" layoutY="426.0" prefHeight="25.0" prefWidth="120.0" />
+      <TextField fx:id="name_field" layoutX="13.0" layoutY="426.0" prefHeight="25.0" prefWidth="120.0" />
+       <TextField fx:id="id_field" layoutX="133.0" layoutY="383.0" prefHeight="25.0" prefWidth="71.0" />
+      <Label layoutX="425.0" layoutY="409.0" text="Division ID" />
+      <Label layoutX="339.0" layoutY="409.0" text="Phone" />
+      <Label layoutX="253.0" layoutY="409.0" text="Postal Code" />
+      <Label layoutX="133.0" layoutY="409.0" text="Address" />
+      <Label layoutX="14.0" layoutY="409.0" text="Name" />
+      <Button fx:id="modifyButton" layoutX="72.0" layoutY="465.0" mnemonicParsing="false" onAction="#modifyCustomer" text="Modify" />
+      <Label layoutX="133.0" layoutY="362.0" text="ID (Leave blank to create new customer)" />
    </children>
 </AnchorPane>

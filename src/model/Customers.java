@@ -1,7 +1,10 @@
 package model;
 
+import DAO.CustomersDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.sql.SQLException;
 
 /**
  * Customers model
@@ -9,7 +12,6 @@ import javafx.collections.ObservableList;
  */
 
 public class Customers {
-    private static ObservableList<Customers> customersList = FXCollections.observableArrayList();
     public int customerID;
     public String customerName;
     public String address;
@@ -68,7 +70,8 @@ public class Customers {
      * Generates a new ID which is incremented from previous known ID's
      * @return lastMaxId
      */
-    public static int newCustomerID() {
+    public static int newCustomerID() throws SQLException {
+        ObservableList<Customers> customersList = CustomersDB.getAllCustomers();
         int lastMaxId = 0;
         for(Customers c : customersList) {
             if (c.getCustomerID() > lastMaxId) {

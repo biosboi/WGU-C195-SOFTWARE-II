@@ -21,7 +21,7 @@ public class ContactsDB {
      */
     public static ObservableList<Contacts> getAllContacts() throws SQLException {
         ObservableList<Contacts> allContactsList = FXCollections.observableArrayList();
-        ResultSet rs = Helpers.makeQuery("SELECT * FROM contacts");
+        ResultSet rs = Helpers.DBQuery("SELECT * FROM contacts");
         while (rs.next()) {
             int contactID = rs.getInt("Contact_ID");
             String contactName = rs.getString("Contact_Name");
@@ -39,7 +39,7 @@ public class ContactsDB {
      */
     public static String getContactName(int contactID) throws SQLException {
         String contactName = "";
-        ResultSet rs = Helpers.makeQuery("SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactID);
+        ResultSet rs = Helpers.DBQuery("SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactID);
         while (rs.next()) {
             contactName = rs.getString("Contact_Name");
         }
@@ -53,7 +53,7 @@ public class ContactsDB {
      */
     public static int getContactId(String contactName) throws SQLException  {
         int contactId = 0;
-        ResultSet rs = Helpers.makeQuery("SELECT Contact_ID FROM contacts WHERE Contact_Name = " + contactName);
+        ResultSet rs = Helpers.DBQuery("SELECT Contact_ID FROM contacts WHERE Contact_Name = " + contactName);
         while (rs.next()) {
             contactId = rs.getInt("Contact_ID");
         }

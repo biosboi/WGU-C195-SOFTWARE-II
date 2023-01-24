@@ -21,7 +21,7 @@ public class AppointmentsDB {
      */
     public static ObservableList<Appointments> getAllAppointments() throws SQLException {
         ObservableList<Appointments> allAppointmentsList = FXCollections.observableArrayList();
-        ResultSet rs = Helpers.makeQuery( "SELECT * FROM appointments");
+        ResultSet rs = Helpers.DBQuery( "SELECT * FROM appointments");
         while (rs.next()) {
             int appointmentID = rs.getInt("Appointment_ID");
             String title = rs.getString("Title");
@@ -47,7 +47,7 @@ public class AppointmentsDB {
      */
     public static boolean newAppointment(Appointments apt) throws SQLException {
         String queryBuild = apt.newAppointmentID() + ", " + apt.getTitle() + ", " + apt.getDescription() + ", " + apt.getLocation() + ", " + apt.getType() + ", " + apt.getAppointmentStart() + ", " + apt.getAppointmentEnd() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
-        Helpers.makeQuery( "INSERT INTO appointments VALUES (" + queryBuild + ");");
+        Helpers.DBQuery( "INSERT INTO appointments VALUES (" + queryBuild + ");");
         return true;
     }
 
@@ -62,7 +62,7 @@ public class AppointmentsDB {
      * @return boolean true if successful, false if failed
      */
     public static boolean deleteAppointment(int apt) throws SQLException {
-        Helpers.makeQuery("DELETE FROM appointments WHERE Appointment_ID =" + apt);
+        Helpers.DBQuery("DELETE FROM appointments WHERE Appointment_ID =" + apt);
         return true;
     }
 }
