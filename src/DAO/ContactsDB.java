@@ -2,6 +2,7 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import main.Helpers;
 import main.JDBC;
 import model.Contacts;
 
@@ -20,9 +21,7 @@ public class ContactsDB {
      */
     public static ObservableList<Contacts> getAllContacts() throws SQLException {
         ObservableList<Contacts> allContactsList = FXCollections.observableArrayList();
-        String query = "SELECT * FROM contacts";
-        PreparedStatement ps = db.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        ResultSet rs = Helpers.makeQuery("SELECT * FROM contacts");
         while (rs.next()) {
             int contactID = rs.getInt("Contact_ID");
             String contactName = rs.getString("Contact_Name");
@@ -40,10 +39,7 @@ public class ContactsDB {
      */
     public static String getContactName(int contactID) throws SQLException {
         String contactName = "";
-        Statement stmt = db.createStatement();
-        String query = "SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactID;
-        JDBC.makePreparedStatement(query, db);
-        ResultSet rs = stmt.executeQuery(query);
+        ResultSet rs = Helpers.makeQuery("SELECT Contact_Name FROM contacts WHERE Contact_ID = " + contactID);
         while (rs.next()) {
             contactName = rs.getString("Contact_Name");
         }
@@ -57,10 +53,7 @@ public class ContactsDB {
      */
     public static int getContactId(String contactName) throws SQLException  {
         int contactId = 0;
-        Statement stmt = db.createStatement();
-        String query = "SELECT Contact_ID FROM contacts WHERE Contact_Name = " + contactName;
-        JDBC.makePreparedStatement(query, db);
-        ResultSet rs = stmt.executeQuery(query);
+        ResultSet rs = Helpers.makeQuery("SELECT Contact_ID FROM contacts WHERE Contact_Name = " + contactName);
         while (rs.next()) {
             contactId = rs.getInt("Contact_ID");
         }

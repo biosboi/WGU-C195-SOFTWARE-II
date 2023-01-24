@@ -10,11 +10,29 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Optional;
 
 public class Helpers {
+    private static final Connection db = JDBC.getConnection();
+
+    /**
+     * @param dbQuery String query to push to DB
+     * @return ResultSet of response from DB
+     * @throws SQLException SQL exception handler
+     */
+    public static ResultSet makeQuery(String dbQuery) throws SQLException {
+        PreparedStatement ps = db.prepareStatement(dbQuery);
+        ps.executeQuery();
+        ResultSet rs;
+        return rs = ps.executeQuery();
+    }
+
     /**
      * Retrieve Zone ID
      * @return Current Zone ID

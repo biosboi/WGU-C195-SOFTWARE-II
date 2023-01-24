@@ -2,6 +2,7 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import main.Helpers;
 import main.JDBC;
 import model.Appointments;
 
@@ -20,9 +21,7 @@ public class AppointmentsDB {
      */
     public static ObservableList<Appointments> getAllAppointments() throws SQLException {
         ObservableList<Appointments> allAppointmentsList = FXCollections.observableArrayList();
-        String query = "SELECT * FROM appointments";
-        PreparedStatement ps = db.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        ResultSet rs = Helpers.makeQuery( "SELECT * FROM appointments");
         while (rs.next()) {
             int appointmentID = rs.getInt("Appointment_ID");
             String title = rs.getString("Title");
@@ -48,9 +47,7 @@ public class AppointmentsDB {
      */
     public static boolean newAppointment(Appointments apt) throws SQLException {
         String queryBuild = apt.newAppointmentID() + ", " + apt.getTitle() + ", " + apt.getDescription() + ", " + apt.getLocation() + ", " + apt.getType() + ", " + apt.getAppointmentStart() + ", " + apt.getAppointmentEnd() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
-        String query = "INSERT INTO appointments VALUES (" + queryBuild + ");";
-        PreparedStatement ps = db.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        Helpers.makeQuery( "INSERT INTO appointments VALUES (" + queryBuild + ");");
         return true;
     }
 
@@ -64,14 +61,8 @@ public class AppointmentsDB {
      * @param apt Appointment ID to delete
      * @return boolean true if successful, false if failed
      */
-    public static boolean deleteAppointment(int apt) {
-        try {
-            String query = "DELETE FROM appointments WHERE Appointment_ID =" + apt;
-            PreparedStatement ps = db.prepareStatement(query);
-            ps.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            return false;
-        }
+    public static boolean deleteAppointment(int apt) throws SQLException {
+        Helpers.makeQuery("DELETE FROM appointments WHERE Appointment_ID =" + apt);
+        return true;
     }
 }

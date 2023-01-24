@@ -7,7 +7,6 @@ import main.JDBC;
 import model.Customers;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,9 +25,7 @@ public class CustomersDB {
      */
     public static ObservableList<Customers> getAllCustomers() throws SQLException {
         ObservableList<Customers> allCustomersList = FXCollections.observableArrayList();
-        String query = "SELECT * FROM customers";
-        PreparedStatement ps = db.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        ResultSet rs = Helpers.makeQuery("SELECT * FROM customers");
         while (rs.next()) {
             int customerID = rs.getInt("Customer_ID");
             String customerName = rs.getString("Customer_Name");
@@ -50,9 +47,7 @@ public class CustomersDB {
      */
     public static List<Integer> getCustomersAppointments(int customerID) throws SQLException {
         List<Integer> customerAppointmentList = new ArrayList<>();
-        String query = "SELECT Appointment_ID FROM appointments WHERE Customer_ID = " + customerID;
-        PreparedStatement ps = db.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        ResultSet rs = Helpers.makeQuery("SELECT Appointment_ID FROM appointments WHERE Customer_ID = " + customerID);
         while (rs.next()) {
             customerAppointmentList.add(rs.getInt("Appointment_ID"));
         }
@@ -76,9 +71,7 @@ public class CustomersDB {
                 }
             }
             try {
-                String query = "DELETE FROM customers WHERE Customer_ID =" + customerID;
-                PreparedStatement ps = db.prepareStatement(query);
-                ps.executeUpdate();
+                Helpers.makeQuery("DELETE FROM customers WHERE Customer_ID = " + customerID);
                 return true;
             } catch (SQLException e) {
                 return false;

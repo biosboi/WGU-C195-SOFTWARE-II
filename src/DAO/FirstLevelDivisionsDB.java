@@ -2,13 +2,11 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import main.Helpers;
 import main.JDBC;
 import model.FirstLevelDivisions;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * First Level Divisions Database Accessor
@@ -34,5 +32,54 @@ public class FirstLevelDivisionsDB {
             allFirstLevelDivisionsList.add(fld);
         }
         return allFirstLevelDivisionsList;
+    }
+
+    /**
+     * Get division ID by country name
+     * @param countryName Country to grab division ID from
+     * @return Division ID of selected country
+     * @throws SQLException SQL exception handler
+     */
+    public static int getDivisionID(String countryName) throws SQLException {
+        int divisionID = 0;
+        int countryID = CountriesDB.getCountryID(countryName);
+        Statement stmt = db.createStatement();
+        String query = "SELECT Division_ID FROM first_level_divisions WHERE Country_ID = " + countryID;
+        JDBC.makePreparedStatement(query, db);
+        stmt.executeQuery(query);
+        ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()) {
+            divisionID = rs.getInt("Division_ID");
+        }
+        return divisionID;
+    }
+
+    /**
+     * Get division ID by country ID
+     * @param countryID Country ID to grab division ID from
+     * @return Division ID of selected country
+     * @throws SQLException SQL exception handler
+     */
+    public static int getDivisionID(int countryID) throws SQLException {
+        int divisionID = 0;
+        ResultSet rs = Helpers.makeQuery("SELECT Division_ID FROM first_level_divisions WHERE Country_ID = " + countryID);
+        while (rs.next()) {
+            divisionID = rs.getInt("Division_ID");
+        }
+        return divisionID;
+    }
+
+    /**
+     * @param divisionID First Level Division ID to get country name from
+     * @return Country name based on First Level Division ID
+     * @throws SQLException SQL exception handler
+     */
+    public static String getCountryName(int divisionID) throws SQLException {
+        String countryName = "";
+        ResultSet rs = Helpers.makeQuery("SELECT Country FROM countries AS c, first_level_divisions AS f WHERE f.Country_ID = c.Country_ID AND Division_ID = " + divisionID);
+        while (rs.next()) {
+            countryName = rs.getString("Country");
+        }
+        return countryName;
     }
 }
