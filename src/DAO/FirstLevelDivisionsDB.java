@@ -63,6 +63,15 @@ public class FirstLevelDivisionsDB {
         return divisionID;
     }
 
+    public static String getDivisionName(int divisionID) throws SQLException {
+        String divisionName = "";
+        ResultSet rs = Helpers.DBQuery("SELECT Division FROM first_level_divisions WHERE Division_ID = " + divisionID);
+        while (rs.next()) {
+            divisionName = rs.getString("Division");
+        }
+        return divisionName;
+    }
+
     /**
      * @param divisionID First Level Division ID to get country name from
      * @return Country name based on First Level Division ID
