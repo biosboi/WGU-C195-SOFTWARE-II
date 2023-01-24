@@ -2,27 +2,24 @@ package DAO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import main.JDBC;
+import main.Helpers;
 import model.Users;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Users Database Accessor
  * @author William Nathan
  */
 public class UsersDB {
-    private static final Connection db = JDBC.getConnection();
-
     /**
      * Generate list of all Users in database.
      * @return allUsersList
      */
     public static ObservableList<Users> getAllUsers() throws SQLException {
         ObservableList<Users> allUsersList = FXCollections.observableArrayList();
-        String query = "SELECT * FROM users";
-        PreparedStatement ps = db.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        ResultSet rs = Helpers.makeQuery("SELECT * FROM users");
         while (rs.next()) {
             int userId = rs.getInt("User_ID");
             String name = rs.getString("Name");
@@ -40,11 +37,7 @@ public class UsersDB {
      */
     public static String getUsername(int UserID) throws SQLException {
         String userName = "";
-        Statement stmt = db.createStatement();
-        String query = "SELECT User_Name FROM users WHERE User_ID = " + UserID;
-        JDBC.makePreparedStatement(query, db);
-        stmt.executeQuery(query);
-        ResultSet rs = stmt.executeQuery(query);
+        ResultSet rs = Helpers.makeQuery("SELECT User_Name FROM users WHERE User_ID = " + UserID);
         while (rs.next()) {
             userName = rs.getString("User_Name");
         }
@@ -58,11 +51,7 @@ public class UsersDB {
      */
     public static int getUserID(String UserName) throws SQLException {
         int userId = 0;
-        Statement stmt = db.createStatement();
-        String query = "SELECT User_ID FROM users WHERE User_Name = " + UserName;
-        JDBC.makePreparedStatement(query, db);
-        stmt.executeQuery(query);
-        ResultSet rs = stmt.executeQuery(query);
+        ResultSet rs = Helpers.makeQuery("SELECT User_ID FROM users WHERE User_Name = " + UserName);
         while (rs.next()) {
             userId = rs.getInt("User_ID");
         }
@@ -77,11 +66,7 @@ public class UsersDB {
      * @throws SQLException SQL exception handler
      */
     public static int loginVerification(String usr, String pwd) throws SQLException {
-        Statement stmt = db.createStatement();
-        String query = "SELECT User_ID FROM users WHERE User_Name = '" + usr + "'AND Password = '" + pwd + "'";
-        JDBC.makePreparedStatement(query, db);
-        stmt.executeQuery(query);
-        ResultSet rs = stmt.executeQuery(query);
+        ResultSet rs = Helpers.makeQuery("SELECT User_ID FROM users WHERE User_Name = '" + usr + "'AND Password = '" + pwd + "'");
         int userID = -1;
         while (rs.next()) {
             userID = rs.getInt("User_ID");

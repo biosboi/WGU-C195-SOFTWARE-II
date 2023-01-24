@@ -92,8 +92,4 @@ public class Helpers {
     public void timeZoneConvert(String oldTime, String newTime) {
 
     }
-
-    public void loginLog() {
-
-    }
 }

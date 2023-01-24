@@ -40,6 +40,15 @@ public class CustomersDB {
     }
 
     /**
+     * @param c Customers object to be added to DB
+     * @throws SQLException SQL exception handler
+     */
+    public static void addCustomer(Customers c) throws SQLException {
+        String queryBuild = c.getCustomerID() + ", " + c.getCustomerName() + ", " + c.getAddress() + ", " + c.getPostalCode() + ", " + c.getPhone() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + c.getDivisionID();
+        Helpers.makeQuery("INSERT INTO customers VALUES (" + queryBuild + ");");
+    }
+
+    /**
      * Returns list of appointments in form of appointment IDs based on given customer ID
      * @param customerID Customer ID to select appointments of
      * @return Returns Integer list of appointment IDs

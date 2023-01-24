@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
  */
 
 public class Customers {
-    private ObservableList<Customers> customersList = FXCollections.observableArrayList();
+    private static ObservableList<Customers> customersList = FXCollections.observableArrayList();
     public int customerID;
     public String customerName;
     public String address;
@@ -68,7 +68,7 @@ public class Customers {
      * Generates a new ID which is incremented from previous known ID's
      * @return lastMaxId
      */
-    public int newCustomerID() {
+    public static int newCustomerID() {
         int lastMaxId = 0;
         for(Customers c : customersList) {
             if (c.getCustomerID() > lastMaxId) {

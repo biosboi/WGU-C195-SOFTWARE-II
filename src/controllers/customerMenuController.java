@@ -2,6 +2,7 @@ package controllers;
 
 import DAO.CountriesDB;
 import DAO.CustomersDB;
+import DAO.FirstLevelDivisionsDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class customerMenuController implements Initializable {
     private ObservableList<Customers> allCustomers = FXCollections.observableArrayList();
@@ -63,7 +65,20 @@ public class customerMenuController implements Initializable {
         customerTable.refresh();
     }
 
-    public void addCustomer(ActionEvent click) {
+    /**
+     * Receives Customer values from text fields, creates new customer object, then adds to database
+     * @param click Execute on button click
+     * @throws SQLException SQL exception handler
+     */
+    public void addCustomer(ActionEvent click) throws SQLException {
+        int customerID = Customers.newCustomerID();
+        String customerName = "";
+        String address = "";
+        String postalCode = "";
+        String phone = "";
+        int divisionID = 0;
+        Customers c = new Customers(customerID, customerName, address, postalCode, phone, divisionID);
+        CustomersDB.addCustomer(c);
         customerTable.refresh();
     }
 
@@ -77,13 +92,11 @@ public class customerMenuController implements Initializable {
     }
 
 
-    /*private void switchComboBox(String forCountry) {
-        customerTable_comboBox_switch.getItems().clear();
-        db.divisionCache.getAll().stream()
-                .filter(div -> div.country.name.equals(forCountry))
-                .forEach(div -> divisionComboBox.getItems().add(div.name));
-        divisionComboBox.setValue("");
-    }*/
+    /**
+     * Handles column switching on combo box selection
+     * @param actionEvent on combo box switch
+     * @throws SQLException SQL exception handler
+     */
     public void switchComboBox(ActionEvent actionEvent) throws SQLException {
         String choice = customerTable_comboBox_switch.getSelectionModel().getSelectedItem();
         if(choice.equals("Division ID")) {
