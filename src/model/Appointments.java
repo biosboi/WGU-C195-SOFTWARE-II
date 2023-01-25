@@ -1,8 +1,11 @@
 package model;
 
+import DAO.AppointmentsDB;
+import DAO.CustomersDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.SQLException;
 import java.sql.Time;
 
 /**
@@ -101,7 +104,8 @@ public class Appointments {
      * Generates a new ID which is incremented from previous known ID's
      * @return lastMaxId
      */
-    public int newAppointmentID() {
+    public int newAppointmentID() throws SQLException {
+        ObservableList<Appointments> appointmentList = AppointmentsDB.getAllAppointments();
         int lastMaxId = 0;
         for(Appointments a : appointmentList) {
             if (a.getAppointmentID() > lastMaxId) {

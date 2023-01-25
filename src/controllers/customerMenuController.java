@@ -81,11 +81,10 @@ public class customerMenuController implements Initializable {
             allDivisions.setAll(FirstLevelDivisionsDB.getAllFirstLevelDivisions());
             for (Countries c : allCountries) {
                 allCountriesNames.add(c.getCountry());
-                countryComboBox.getItems().add(c.getCountry());
             }
+            countryComboBox.getItems().addAll(allCountriesNames);
             for (FirstLevelDivisions f : allDivisions) {
                 allDivisionNames.add(f.getDivision());
-                //divisionComboBox.getItems().add(f.getDivision());
             }
 
         } catch (SQLException e) {
@@ -115,8 +114,8 @@ public class customerMenuController implements Initializable {
                     address_field.setText(newC.getAddress());
                     postalCode_field.setText(newC.getPostalCode());
                     phone_field.setText(newC.getPhone());
-                    divisionComboBox.setValue(FirstLevelDivisionsDB.getDivisionName(newC.getDivisionID()));
                     countryComboBox.setValue(FirstLevelDivisionsDB.getCountryName(newC.getDivisionID()));
+                    divisionComboBox.setValue(FirstLevelDivisionsDB.getDivisionName(newC.getDivisionID()));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -184,13 +183,13 @@ public class customerMenuController implements Initializable {
      * Clears out text fields for cleanup after customer data manipulation
      */
     public void clearFields() {
-        id_field.setText("");
-        name_field.setText("");
-        address_field.setText("");
-        postalCode_field.setText("");
-        phone_field.setText("");
-        divisionComboBox.setValue(null);
-        countryComboBox.setValue(null);
+        id_field.clear();
+        name_field.clear();
+        address_field.clear();
+        postalCode_field.clear();
+        phone_field.clear();
+        divisionComboBox.getSelectionModel().clearSelection();
+        countryComboBox.getSelectionModel().clearSelection();
     }
 
     public boolean validateFields(Object[] toValidate) {
@@ -217,20 +216,18 @@ public class customerMenuController implements Initializable {
         customerTable.setItems(queryResult);
     }
 
+    /**
+     * Handles filtering of country and division combo boxes. Reacts to listener in Initialization
+     */
     @FXML
     private void divisionComboBoxSwitch() throws SQLException {
-        ObservableList<String> queryResult = FXCollections.observableArrayList();
         String searchString = countryComboBox.getSelectionModel().getSelectedItem();
+        allDivisionNames.clear();
         divisionComboBox.getItems().clear();
-        for (FirstLevelDivisions f : allDivisions) {
-            if (searchString.equals(f.getDivision())) {
-                queryResult.add(f.getDivision());
+        for (Countries c : allCountries) {
+            if (searchString.equals(c.getCountry())) {
+                allDivisionNames.addAll(FirstLevelDivisionsDB.getDivisionName(c.getCountryID()));
             }
         }
-        if (searchString.isEmpty()) {
-            divisionComboBox.getItems().addAll(allDivisionNames);
-            return;
-        }
-        divisionComboBox.setItems(queryResult);
     }
 }
