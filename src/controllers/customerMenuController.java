@@ -191,10 +191,12 @@ public class customerMenuController implements Initializable {
      * @throws SQLException SQL exception handler
      */
     public void removeCustomer() throws SQLException {
-        if (CustomersDB.deleteCustomer(customerTable.getSelectionModel().getSelectedItem().getCustomerID())) {
-            allCustomers.setAll(CustomersDB.getAllCustomers());
-            clearFields();
-            customerTable.refresh();
+        if (Helpers.ConfirmationMessage("Are you sure you want to delete this customer?")) {
+            if (CustomersDB.deleteCustomer(customerTable.getSelectionModel().getSelectedItem().getCustomerID())) {
+                allCustomers.setAll(CustomersDB.getAllCustomers());
+                clearFields();
+                customerTable.refresh();
+            }
         }
     }
 
@@ -217,6 +219,7 @@ public class customerMenuController implements Initializable {
         postalCode_field.clear();
         phone_field.clear();
         divisionComboBox.getSelectionModel().clearSelection();
+        divisionComboBox.getItems().clear();
         countryComboBox.getSelectionModel().clearSelection();
         customerTable.getSelectionModel().clearSelection();
     }
