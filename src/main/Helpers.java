@@ -33,6 +33,39 @@ public class Helpers {
     }
 
     /**
+     * By providing a table and key value, this function will return the creation date and user so it is not overwritten
+     * @param table table to pull created by and created date from
+     * @param key Primary Key to filter on
+     * @return ResultSet of both Create_Date and Created_By
+     * @throws SQLException SQL exception handler
+     */
+    public static ResultSet DBgetCreation(String table, int key) throws SQLException {
+        PreparedStatement ps;
+        ResultSet rs;
+        switch (table) {
+            case "countries":
+                ps = db.prepareStatement("SELECT Create_Date, Created_By FROM countries WHERE Country_ID = " + key);
+                return rs = ps.executeQuery();
+            case "first_level_divisions":
+                ps = db.prepareStatement("SELECT Create_Date, Created_By FROM first_level_divisions WHERE Division_ID = " + key);
+                return rs = ps.executeQuery();
+            case "customers":
+                ps = db.prepareStatement("SELECT Create_Date, Created_By FROM customers WHERE Customer_ID = Customer_ID" + key);
+                return rs = ps.executeQuery();
+            case "appointments":
+                ps = db.prepareStatement("SELECT Create_Date, Created_By FROM appointments WHERE Appointment_ID" + key);
+                return rs = ps.executeQuery();
+            case "users":
+                ps = db.prepareStatement("SELECT Create_Date, Created_By FROM users WHERE User_ID" + key);
+                return rs = ps.executeQuery();
+            case "contacts":
+                ps = db.prepareStatement("SELECT Create_Date, Created_By FROM contacts WHERE Contact_ID" + key);
+                return rs = ps.executeQuery();
+        }
+        return null;
+    }
+
+    /**
      * @param dbQuery String statement to push to DB
      * @throws SQLException SQL exception handler
      */

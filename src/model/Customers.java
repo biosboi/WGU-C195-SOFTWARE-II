@@ -1,7 +1,7 @@
 package model;
 
 import DAO.CustomersDB;
-import javafx.collections.FXCollections;
+import DAO.FirstLevelDivisionsDB;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
@@ -18,6 +18,7 @@ public class Customers {
     public String postalCode;
     public String phone;
     public int divisionID;
+    public String divisionName;
 
     /**
      * @param customerID PK
@@ -27,13 +28,14 @@ public class Customers {
      * @param phone Phone Number of Customer
      * @param divisionID Division ID assigned to Customer
      */
-    public Customers (int customerID, String customerName, String address, String postalCode, String phone, int divisionID) {
+    public Customers (int customerID, String customerName, String address, String postalCode, String phone, int divisionID) throws SQLException {
         this.customerID = customerID;
         this.customerName = customerName;
         this.address = address;
         this.postalCode = postalCode;
         this.phone = phone;
         this.divisionID = divisionID;
+        this.divisionName = getDivisionName();
     }
 
     /**
@@ -65,6 +67,10 @@ public class Customers {
      * @return Division ID of Customer
      */
     public int getDivisionID() { return divisionID; }
+
+    public String getDivisionName() throws SQLException {
+        return FirstLevelDivisionsDB.getDivisionName(this.divisionID);
+    }
 
     /**
      * Generates a new ID which is incremented from previous known ID's

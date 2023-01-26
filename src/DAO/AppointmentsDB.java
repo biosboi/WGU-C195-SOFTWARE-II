@@ -3,17 +3,17 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.Helpers;
-import main.JDBC;
 import model.Appointments;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
 
 /**
  * Appointments Database Accessor
  * @author William Nathan
  */
 public class AppointmentsDB {
-    private static final Connection db = JDBC.getConnection();
 
     /**
      * Generate list of all Appointments in database.

@@ -31,9 +31,9 @@ public class UsersDB {
     }
 
     /**
-     * Retrieve user name based on user id
+     * Retrieve username based on user id
      * @param UserID find name with this id
-     * @return associated user name
+     * @return associated username
      */
     public static String getUsername(int UserID) throws SQLException {
         String userName = "";
@@ -45,7 +45,7 @@ public class UsersDB {
     }
 
     /**
-     * Retrieve user id based on user name
+     * Retrieve user id based on username
      * @param UserName find id with this name
      * @return associated user id
      */

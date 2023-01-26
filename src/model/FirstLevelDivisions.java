@@ -1,15 +1,11 @@
 package model;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 /**
  * First Level Divisions model
  * @author William Nathan
  */
 
 public class FirstLevelDivisions {
-    private static ObservableList<FirstLevelDivisions> firstLevelDivisionsList = FXCollections.observableArrayList();
     public int divisionID;
     public String division;
     public int countryID;

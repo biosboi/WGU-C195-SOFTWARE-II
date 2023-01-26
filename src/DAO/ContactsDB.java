@@ -3,17 +3,16 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.Helpers;
-import main.JDBC;
 import model.Contacts;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Contacts Database Accessor
  * @author William Nathan
  */
 public class ContactsDB {
-    private static final Connection db = JDBC.getConnection();
 
     /**
      * Generate list of all contacts in database.

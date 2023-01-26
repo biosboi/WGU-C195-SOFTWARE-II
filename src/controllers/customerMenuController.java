@@ -20,6 +20,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class customerMenuController implements Initializable {
     private final ObservableList<Customers> allCustomers = FXCollections.observableArrayList();
@@ -40,9 +42,7 @@ public class customerMenuController implements Initializable {
     @FXML
     public TableColumn<Object, Object> customerTable_Phone;
     @FXML
-    public TableColumn<Object, Object> customerTable_comboBox;
-    @FXML
-    public ComboBox<String> customerTable_comboBox_switch;
+    public TableColumn<Object, Object> customerTable_division;
     @FXML
     public ComboBox<String> countryComboBox;
     @FXML
@@ -58,13 +58,15 @@ public class customerMenuController implements Initializable {
     @FXML
     public TextField id_field;
     @FXML
-    public Button modifyButton;
-    @FXML
     public Button returnButton;
     @FXML
     public Button removeButton;
     @FXML
     public Button addButton;
+    @FXML
+    public Button modifyButton;
+    @FXML
+    public Button clearButton;
 
     /**
      * Init table with customer data, country column initially unfiltered
@@ -91,10 +93,6 @@ public class customerMenuController implements Initializable {
             throw new RuntimeException(e);
         }
 
-        // Set up table view
-        customerTable_comboBox_switch.getItems().add("Division ID");
-        customerTable_comboBox_switch.getItems().addAll(allCountriesNames);
-
         customerTable.setItems(allCustomers);
         customerTable.refresh();
 
@@ -103,9 +101,9 @@ public class customerMenuController implements Initializable {
         customerTable_Address.setCellValueFactory(new PropertyValueFactory<>("address"));
         customerTable_PostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerTable_Phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        customerTable_comboBox.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
+        customerTable_division.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
 
-        // Add listener to table
+        // Add listener to table to update text fields on selection
         customerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldC, newC) -> {
             if (newC != null) {
                 try {
@@ -115,7 +113,19 @@ public class customerMenuController implements Initializable {
                     postalCode_field.setText(newC.getPostalCode());
                     phone_field.setText(newC.getPhone());
                     countryComboBox.setValue(FirstLevelDivisionsDB.getCountryName(newC.getDivisionID()));
-                    divisionComboBox.setValue(FirstLevelDivisionsDB.getDivisionName(newC.getDivisionID()));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        // Add listener to country combo box to determine division list based on country selection
+        countryComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldC, newC) -> {
+            if (newC != null) {
+                try {
+                    // Filter new divisions
+                    divisionComboBoxSwitch(newC);
+                    // Set current value
+                    divisionComboBox.setValue(FirstLevelDivisionsDB.getDivisionName(FirstLevelDivisionsDB.getDivisionID(newC)));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -129,16 +139,21 @@ public class customerMenuController implements Initializable {
      */
     public void addCustomer() throws SQLException {
         if (id_field.getText().isEmpty()){
-            Object[] toValidate = new Object[]{};
-            int customerID = Customers.newCustomerID();
-            String customerName = name_field.getText();
-            String address = address_field.getText();
-            String postalCode = postalCode_field.getText();
-            String phone = phone_field.getText();
-            int divisionID = Integer.parseInt(divisionComboBox.getValue());
-
-            if (!validateFields(toValidate)){
-                Customers c = new Customers(customerID, customerName, address, postalCode, phone, divisionID);
+            Object[] toValidate = new Object[]{
+                    name_field.getText(),
+                    address_field.getText(),
+                    postalCode_field.getText(),
+                    phone_field.getText(),
+                    divisionComboBox.getSelectionModel().getSelectedItem()
+            };
+            if (validateFields(toValidate)){
+                Customers c = new Customers(
+                        Customers.newCustomerID(),
+                        (String) toValidate[0],
+                        (String) toValidate[1],
+                        (String) toValidate[2],
+                        (String) toValidate[3],
+                        (FirstLevelDivisionsDB.getDivisionIDbyName(divisionComboBox.getValue())));
                 CustomersDB.addCustomer(c);
                 clearFields();
                 allCustomers.setAll(CustomersDB.getAllCustomers());
@@ -150,7 +165,21 @@ public class customerMenuController implements Initializable {
         }
     }
 
+    /**
+     * Grabs selected customer from table and updates based on text fields
+     * @throws SQLException SQL exception handler
+     */
     public void modifyCustomer() throws SQLException {
+        Customers oldC = customerTable.getSelectionModel().getSelectedItem();
+        Customers modCustomer = new Customers(
+                oldC.getCustomerID(),
+                name_field.getText(),
+                address_field.getText(),
+                postalCode_field.getText(),
+                phone_field.getText(),
+                FirstLevelDivisionsDB.getDivisionIDbyName(divisionComboBox.getValue())
+        );
+        CustomersDB.modifyCustomer(modCustomer);
 
         clearFields();
         allCustomers.setAll(CustomersDB.getAllCustomers());
@@ -162,8 +191,7 @@ public class customerMenuController implements Initializable {
      * @throws SQLException SQL exception handler
      */
     public void removeCustomer() throws SQLException {
-        int customerID = customerTable.getSelectionModel().getSelectedItem().getCustomerID();
-        if (CustomersDB.deleteCustomer(customerID)) {
+        if (CustomersDB.deleteCustomer(customerTable.getSelectionModel().getSelectedItem().getCustomerID())) {
             allCustomers.setAll(CustomersDB.getAllCustomers());
             clearFields();
             customerTable.refresh();
@@ -190,44 +218,71 @@ public class customerMenuController implements Initializable {
         phone_field.clear();
         divisionComboBox.getSelectionModel().clearSelection();
         countryComboBox.getSelectionModel().clearSelection();
-    }
-
-    public boolean validateFields(Object[] toValidate) {
-        return true;
+        customerTable.getSelectionModel().clearSelection();
     }
 
     /**
-     * Handles column switching on combo box selection
+     * name (String) No numbers
+     * address (String)
+     * postal code (String)
+     * phone (String) No letters
+     * division Name (String)
+     * @param toValidate array of multiple data types to validate
+     * @return boolean if all types are valid, returns message for each invalid
      */
-    @FXML
-    private void switchComboBox() throws SQLException {
-        ObservableList<Customers> queryResult = FXCollections.observableArrayList();
-        String searchString = customerTable_comboBox_switch.getSelectionModel().getSelectedItem();
-        customerTable.getItems().clear();
-        for (Customers c : allCustomers) {
-            if (searchString.equals(FirstLevelDivisionsDB.getCountryName(c.getDivisionID()))) {
-                queryResult.add(c);
-            }
+    public boolean validateFields(Object[] toValidate) {
+        Pattern onlyAlpha = Pattern.compile("\\d");
+        Pattern onlyDigits = Pattern.compile("[a-zA-Z]");
+        Matcher nameMatch = onlyAlpha.matcher((String) toValidate[0]);
+        Matcher phoneMatch = onlyDigits.matcher((String) toValidate[3]);
+
+        String errorMessage = "One or more errors have been found:\n";
+        boolean valid = true;
+        // Name
+        if (((String) toValidate[0]).isEmpty() || nameMatch.find()) {
+            errorMessage = errorMessage.concat("Name field is empty or invalid.\n");
+            valid = false;
         }
-        if (searchString.equals("Division ID")) {
-            customerTable.setItems(allCustomers);
-            return;
+        // Address
+        if (((String) toValidate[1]).isEmpty()) {
+            errorMessage = errorMessage.concat("Address field is empty or invalid.\n");
+            valid = false;
         }
-        customerTable.setItems(queryResult);
+        // Postal Code
+        if (((String) toValidate[2]).isEmpty()) {
+            errorMessage = errorMessage.concat("Postal Code field is empty or invalid.\n");
+            valid = false;
+        }
+        // Phone
+        if (((String) toValidate[3]).isEmpty() || phoneMatch.find()) {
+            errorMessage = errorMessage.concat("Phone Number field is empty or invalid.\n");
+            valid = false;
+        }
+        // Division ID
+        if (((String) toValidate[4]).isEmpty()) {
+            errorMessage = errorMessage.concat("Division field is empty or invalid.");
+            valid = false;
+        }
+
+        if (valid) {
+            return true;
+        } else {
+            Helpers.WarningMessage(errorMessage);
+            return false;
+        }
     }
 
     /**
      * Handles filtering of country and division combo boxes. Reacts to listener in Initialization
+     * @param newCountry string name of new country to be converted to division name list
      */
     @FXML
-    private void divisionComboBoxSwitch() throws SQLException {
-        String searchString = countryComboBox.getSelectionModel().getSelectedItem();
+    private void divisionComboBoxSwitch(String newCountry) throws SQLException {
+        divisionComboBox.getSelectionModel().clearSelection();
+        divisionComboBox.getItems().removeAll();
         allDivisionNames.clear();
-        divisionComboBox.getItems().clear();
-        for (Countries c : allCountries) {
-            if (searchString.equals(c.getCountry())) {
-                allDivisionNames.addAll(FirstLevelDivisionsDB.getDivisionName(c.getCountryID()));
-            }
-        }
+
+        allDivisionNames.addAll(FirstLevelDivisionsDB.getDivisionsByCountry(CountriesDB.getCountryID(newCountry)));
+        divisionComboBox.getItems().setAll(allDivisionNames);
     }
 }

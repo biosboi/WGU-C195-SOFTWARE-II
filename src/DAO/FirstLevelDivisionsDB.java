@@ -3,17 +3,17 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.Helpers;
-import main.JDBC;
 import model.FirstLevelDivisions;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * First Level Divisions Database Accessor
  * @author William Nathan
  */
 public class FirstLevelDivisionsDB {
-    private static final Connection db = JDBC.getConnection();
 
     /**
      * Generate list of all First Level Divisions in database.
@@ -63,6 +63,27 @@ public class FirstLevelDivisionsDB {
         return divisionID;
     }
 
+    /**
+     * Get division ID by division name
+     * @param divisionName Country ID to grab division ID from
+     * @return Division ID of selected country
+     * @throws SQLException SQL exception handler
+     */
+    public static int getDivisionIDbyName(String divisionName) throws SQLException {
+        int divisionID = 0;
+        ResultSet rs = Helpers.DBQuery("SELECT Division_ID FROM first_level_divisions WHERE Division = " + "'" + divisionName + "'");
+        while (rs.next()) {
+            divisionID = rs.getInt("Division_ID");
+        }
+        return divisionID;
+    }
+
+    /**
+     * Get Division Name by Division ID
+     * @param divisionID Division ID to grab name from
+     * @return String name of Division
+     * @throws SQLException SQL exception handler
+     */
     public static String getDivisionName(int divisionID) throws SQLException {
         String divisionName = "";
         ResultSet rs = Helpers.DBQuery("SELECT Division FROM first_level_divisions WHERE Division_ID = " + divisionID);
@@ -84,5 +105,19 @@ public class FirstLevelDivisionsDB {
             countryName = rs.getString("Country");
         }
         return countryName;
+    }
+
+    /**
+     * @param countryID Country ID to search for division names with
+     * @return String array of all division names in selected country
+     * @throws SQLException SQL exception handler
+     */
+    public static ArrayList<String> getDivisionsByCountry(int countryID) throws SQLException {
+        ArrayList<String> allFirstLevelDivisionsList = new ArrayList<>();
+        ResultSet rs = Helpers.DBQuery("SELECT Division FROM first_level_divisions WHERE Country_ID = " + countryID);
+        while (rs.next()) {
+            allFirstLevelDivisionsList.add(rs.getString("Division"));
+        }
+        return allFirstLevelDivisionsList;
     }
 }

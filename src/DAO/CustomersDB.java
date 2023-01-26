@@ -3,10 +3,8 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.Helpers;
-import main.JDBC;
 import model.Customers;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,8 +15,6 @@ import java.util.List;
  * @author William Nathan
  */
 public class CustomersDB {
-    private static final Connection db = JDBC.getConnection();
-
     /**
      * Generate list of all Customers in database.
      * @return allCustomersList
@@ -46,6 +42,23 @@ public class CustomersDB {
     public static void addCustomer(Customers c) throws SQLException {
         String queryBuild = c.getCustomerID() + ", '" + c.getCustomerName() + "', '" + c.getAddress() + "', '" + c.getPostalCode() + "', '" + c.getPhone() + "', NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + c.getDivisionID();
         Helpers.DBExec("INSERT INTO customers VALUES (" + queryBuild + ");");
+    }
+
+    /**
+     * @param c Customer object to be updated. Will retain old Customer ID
+     * @throws SQLException SQL exception handler
+     */
+    public static void modifyCustomer(Customers c) throws SQLException {
+        Helpers.DBExec(
+                "UPDATE customers SET " +
+                        "Customer_Name = '" + c.getCustomerName() +
+                        "', Address = '" + c.getAddress() +
+                        "', Postal_Code = '" + c.getPostalCode() +
+                        "', Phone = '" + c.getPhone() +
+                        "', Last_Update = NOW(), Last_Updated_By = CURRENT_USER" +
+                        ", Division_ID = " + c.getDivisionID() +
+                        " WHERE Customer_ID = " + c.getCustomerID()
+        );
     }
 
     /**

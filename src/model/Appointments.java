@@ -1,7 +1,6 @@
 package model;
 
 import DAO.AppointmentsDB;
-import DAO.CustomersDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

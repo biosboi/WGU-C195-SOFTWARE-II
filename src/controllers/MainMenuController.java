@@ -58,7 +58,6 @@ public class MainMenuController {
     /**
      * Exit program
      * @param click Execute on button click
-     * @throws IOException Handle menu open exception
      */
     public void exit(ActionEvent click) {
         JDBC.closeConnection();
