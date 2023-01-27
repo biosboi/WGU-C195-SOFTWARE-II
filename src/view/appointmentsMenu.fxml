@@ -38,8 +38,8 @@
     <TextField fx:id="location_field" layoutX="253.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
     <TextField fx:id="type_field" layoutX="339.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
     <ComboBox fx:id="contactComboBox" layoutX="425.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
-    <TextField fx:id="start_field" layoutX="13.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
-    <TextField fx:id="end_field" layoutX="133.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
+    <DatePicker fx:id="start_field" layoutX="13.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
+    <DatePicker fx:id="end_field" layoutX="133.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
     <TextField fx:id="customerID_field" layoutX="253.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" />
     <TextField fx:id="userID_field" layoutX="339.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" />
 

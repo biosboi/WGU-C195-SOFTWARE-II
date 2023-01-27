@@ -7,7 +7,7 @@ import model.Appointments;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 /**
  * Appointments Database Accessor
@@ -28,8 +28,8 @@ public class AppointmentsDB {
             String description = rs.getString("Description");
             String location = rs.getString("Location");
             String type = rs.getString("Type");
-            Time appointmentStart = rs.getTime("Start");
-            Time appointmentEnd = rs.getTime("End");
+            LocalDateTime appointmentStart = rs.getTime("Start");
+            LocalDateTime appointmentEnd = rs.getTime("End");
             int customerID = rs.getInt("Customer_ID");
             int userID = rs.getInt("User_ID");
             int contactID = rs.getInt("Contact_ID");

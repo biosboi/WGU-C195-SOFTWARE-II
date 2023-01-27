@@ -1,11 +1,12 @@
 package model;
 
 import DAO.AppointmentsDB;
+import DAO.ContactsDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 /**
  * Appointments model
@@ -19,11 +20,12 @@ public class Appointments {
     public String description;
     public String location;
     public String type;
-    public Time appointmentStart;
-    public Time appointmentEnd;
+    public LocalDateTime appointmentStart;
+    public LocalDateTime appointmentEnd;
     public int customerID;
     public int userID;
     public int contactID;
+    public String contactName;
 
     /**
      * @param appointmentID PK
@@ -36,7 +38,7 @@ public class Appointments {
      * @param userID FK
      * @param contactID FK
      */
-    public Appointments (int appointmentID, String title, String description, String location, String type, Time appointmentStart, Time appointmentEnd, int customerID, int userID, int contactID) {
+    public Appointments (int appointmentID, String title, String description, String location, String type, LocalDateTime appointmentStart, LocalDateTime appointmentEnd, int customerID, int userID, int contactID) throws SQLException {
         this.appointmentID = appointmentID;
         this.title = title;
         this.description = description;
@@ -47,6 +49,11 @@ public class Appointments {
         this.customerID = customerID;
         this.userID = userID;
         this.contactID = contactID;
+        this.contactName = getContactName();
+    }
+
+    public String getContactName() throws SQLException {
+        return ContactsDB.getContactName(this.contactID);
     }
 
     /**
@@ -77,12 +84,12 @@ public class Appointments {
     /**
      * @return Appointment Start Time
      */
-    public Time getAppointmentStart() { return appointmentStart; }
+    public LocalDateTime getAppointmentStart() { return appointmentStart; }
 
     /**
      * @return Appointment End Time
      */
-    public Time getAppointmentEnd() { return appointmentEnd; }
+    public LocalDateTime getAppointmentEnd() { return appointmentEnd; }
 
     /**
      * @return Customer ID

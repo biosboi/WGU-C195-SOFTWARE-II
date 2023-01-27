@@ -32,17 +32,17 @@ public class customerMenuController implements Initializable {
     @FXML
     public TableView<Customers> customerTable;
     @FXML
-    public TableColumn<Object, Object> customerTable_ID;
+    public TableColumn<Customers, Integer> customerTable_ID;
     @FXML
-    public TableColumn<Object, Object> customerTable_Name;
+    public TableColumn<Customers, String> customerTable_Name;
     @FXML
-    public TableColumn<Object, Object> customerTable_Address;
+    public TableColumn<Customers, String> customerTable_Address;
     @FXML
-    public TableColumn<Object, Object> customerTable_PostalCode;
+    public TableColumn<Customers, String> customerTable_PostalCode;
     @FXML
-    public TableColumn<Object, Object> customerTable_Phone;
+    public TableColumn<Customers, String> customerTable_Phone;
     @FXML
-    public TableColumn<Object, Object> customerTable_division;
+    public TableColumn<Customers, String> customerTable_division;
     @FXML
     public ComboBox<String> countryComboBox;
     @FXML
