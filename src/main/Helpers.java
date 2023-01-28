@@ -14,7 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -125,12 +127,32 @@ public class Helpers {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    /**
-     * Convert one time zone to another
-     * @param oldTime Previous time zone
-     * @param newTime Updated time zone
-     */
-    public void timeZoneConvert(String oldTime, String newTime) {
 
+    /**
+     * @param ldt local timestamp to be converted to UTC
+     * @return UTC timestamp
+     */
+    public static LocalDateTime getUTCTime(LocalDateTime ldt) {
+        ZonedDateTime ldtZoned = ldt.atZone(getZoneID());
+        ZonedDateTime utcZoned = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZoned.toLocalDateTime();
+    }
+
+    /**
+     * @param utc UTC timestamp to be converted to user's local timezone
+     * @return converted local timestamp
+     */
+    public static LocalDateTime getLocalTime(LocalDateTime utc) {
+        ZonedDateTime utcZoned = utc.atZone(getZoneID());
+        return utcZoned.toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(getZoneID()).toLocalDateTime();
+    }
+
+    /**
+     * @param utc UTC time to be converted to EST for business purposes
+     * @return converted EST timestamp
+     */
+    public static LocalDateTime getBusinessTime(LocalDateTime utc) {
+        ZonedDateTime utcZoned = utc.atZone(getZoneID());
+        return utcZoned.toLocalDateTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("US/Eastern")).toLocalDateTime();
     }
 }

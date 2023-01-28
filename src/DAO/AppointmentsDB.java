@@ -28,8 +28,8 @@ public class AppointmentsDB {
             String description = rs.getString("Description");
             String location = rs.getString("Location");
             String type = rs.getString("Type");
-            LocalDateTime appointmentStart = rs.getTime("Start");
-            LocalDateTime appointmentEnd = rs.getTime("End");
+            LocalDateTime appointmentStart = rs.getTimestamp("Start").toLocalDateTime();
+            LocalDateTime appointmentEnd = rs.getTimestamp("End").toLocalDateTime();
             int customerID = rs.getInt("Customer_ID");
             int userID = rs.getInt("User_ID");
             int contactID = rs.getInt("Contact_ID");
@@ -41,19 +41,34 @@ public class AppointmentsDB {
 
     /**
      * Input appointment object and database will be updated with new appointment
+     *
      * @param apt Appointment object used to push into DB
-     * @return boolean true if successful, false if failed
      * @throws SQLException SQL exception handler
      */
-    public static boolean newAppointment(Appointments apt) throws SQLException {
-        String queryBuild = apt.newAppointmentID() + ", " + apt.getTitle() + ", " + apt.getDescription() + ", " + apt.getLocation() + ", " + apt.getType() + ", " + apt.getAppointmentStart() + ", " + apt.getAppointmentEnd() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
+    public static void addAppointment(Appointments apt) throws SQLException {
+        String queryBuild = Appointments.newAppointmentID() + ", " + apt.getTitle() + ", " + apt.getDescription() + ", " + apt.getLocation() + ", " + apt.getType() + ", " + apt.getAppointmentStart() + ", " + apt.getAppointmentEnd() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
         Helpers.DBQuery( "INSERT INTO appointments VALUES (" + queryBuild + ");");
-        return true;
     }
 
-    public static boolean modifyAppointment(Appointments apt) {
-        // Delete old appointment
-        return true;
+    /**
+     * @param apt Appointment object to be updated. Will retain appointment ID
+     * @throws SQLException SQL exception handler
+     */
+    public static void modifyAppointment(Appointments apt) throws SQLException {
+        Helpers.DBExec(
+                "UPDATE appointments SET " +
+                        "Title = '" + apt.getTitle() +
+                        "', Description = '" + apt.getDescription() +
+                        "', Location = '" + apt.getLocation() +
+                        "', Type = '" + apt.getType() +
+                        "', Start = '" + apt.getAppointmentStart() +
+                        "', End = '" + apt.getAppointmentEnd() +
+                        "', Last_Update = NOW(), Last_Updated_By = CURRENT_USER" +
+                        ", Customer_ID = " + apt.getCustomerID() +
+                        ", User_ID = " + apt.getUserID() +
+                        ", Contact_ID = " + apt.getContactID() +
+                        " WHERE Customer_ID = " + apt.getCustomerID()
+        );
     }
 
     /**

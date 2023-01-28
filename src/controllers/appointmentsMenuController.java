@@ -2,6 +2,8 @@ package controllers;
 
 import DAO.AppointmentsDB;
 import DAO.ContactsDB;
+import DAO.CustomersDB;
+import DAO.UsersDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,18 +14,27 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import main.Helpers;
 import model.Appointments;
 import model.Contacts;
+import model.Customers;
+import model.Users;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.IntStream;
 
 public class appointmentsMenuController implements Initializable {
     private final ObservableList<Appointments> allAppointments = FXCollections.observableArrayList();
     private final ObservableList<Contacts> allContacts = FXCollections.observableArrayList();
+    private final ObservableList<Customers> allCustomers = FXCollections.observableArrayList();
+    private final ObservableList<Users> allUsers = FXCollections.observableArrayList();
     private final ArrayList<String> allContactsNames = new ArrayList<>();
+    private final ArrayList<Integer> allUsersIDs = new ArrayList<>();
+    private final ArrayList<Integer> allCustomersIDs = new ArrayList<>();
     @FXML
     public TableView<Appointments> aptsTable;
     @FXML
@@ -39,9 +50,9 @@ public class appointmentsMenuController implements Initializable {
     @FXML
     public TableColumn<Appointments, String> aptsTable_Type;
     @FXML
-    public TableColumn<Appointments, Time> aptsTable_Start;
+    public TableColumn<Appointments, LocalDateTime> aptsTable_Start;
     @FXML
-    public TableColumn<Appointments, Time> aptsTable_End;
+    public TableColumn<Appointments, LocalDateTime> aptsTable_End;
     @FXML
     public TableColumn<Appointments, Integer> aptsTable_CustomerID;
     @FXML
@@ -71,22 +82,56 @@ public class appointmentsMenuController implements Initializable {
     @FXML
     public DatePicker end_field;
     @FXML
-    public TextField customerID_field;
+    public ComboBox<String> customerIDComboBox;
     @FXML
-    public TextField userID_field;
+    public ComboBox<String> userIDComboBox;
     @FXML
     public ComboBox<String> contactComboBox;
+    @FXML
+    public ComboBox<Integer>  startTimeMin;
+    @FXML
+    public ComboBox<Integer> startTimeHour;
+    @FXML
+    public ComboBox<Integer> endTimeHour;
+    @FXML
+    public ComboBox<Integer> endTimeMin;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Initialize Name and object lists for Customers / Countries / Divisions
+        // Initialize Name and object lists for Appointments / Contacts / Customers / Users
+        Helpers.setLocale();
+
         try {
+            // Fill out combo boxes
             allAppointments.setAll(AppointmentsDB.getAllAppointments());
             allContacts.setAll(ContactsDB.getAllContacts());
+            allCustomers.setAll(CustomersDB.getAllCustomers());
+            allUsers.setAll(UsersDB.getAllUsers());
+
             for (Contacts c : allContacts) {
                 allContactsNames.add(c.getContactName());
             }
+            for (Users u : allUsers) {
+                allUsersIDs.add(u.getUserID());
+            }
+            for (Customers c : allCustomers) {
+                allCustomersIDs.add(c.getCustomerID());
+            }
+
             contactComboBox.getItems().addAll(allContactsNames);
+            for (Integer i : allUsersIDs) { userIDComboBox.getItems().add(String.valueOf(i)); }
+            for (Integer i : allCustomersIDs) { customerIDComboBox.getItems().add(String.valueOf(i)); }
+
+            List<Integer> hours = IntStream.rangeClosed(0, 23)
+                    .boxed().toList();
+            List<Integer> minutes = IntStream.rangeClosed(0, 59)
+                    .boxed().toList();
+
+            startTimeHour.getItems().addAll(hours);
+            startTimeMin.getItems().addAll(minutes);
+            endTimeHour.getItems().addAll(hours);
+            endTimeMin.getItems().addAll(minutes);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -114,10 +159,10 @@ public class appointmentsMenuController implements Initializable {
                     description_field.setText(newA.getDescription());
                     location_field.setText(newA.getLocation());
                     type_field.setText(newA.getType());
-                    //start_field.setValue(newA.getAppointmentStart());
-                    //end_field.(newA.getAppointmentEnd());
-                    customerID_field.setText(Integer.toString(newA.getCustomerID()));
-                    userID_field.setText(Integer.toString(newA.getUserID()));
+                    start_field.setValue(LocalDate.from(newA.getAppointmentStart())); // convert to local time
+                    end_field.setValue(LocalDate.from(newA.getAppointmentEnd())); // convert to local time
+                    customerIDComboBox.setValue((Integer.toString(newA.getCustomerID())));
+                    userIDComboBox.setValue(Integer.toString(newA.getUserID()));
                     contactComboBox.setValue(ContactsDB.getContactName(newA.getContactID()));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -126,15 +171,73 @@ public class appointmentsMenuController implements Initializable {
         });
     }
 
-
-
-    public void addAppointment(ActionEvent actionEvent) {
+    public void addAppointment() throws SQLException {
+        if (id_field.getText().isEmpty()){
+            Object[] toValidate = new Object[]{
+                    title_field.getText(),
+                    description_field.getText(),
+                    location_field.getText(),
+                    type_field.getText(),
+                    //start_field.,
+                    //end_field.,
+                    customerIDComboBox.getSelectionModel().getSelectedItem(),
+                    userIDComboBox.getSelectionModel().getSelectedItem()
+            };
+            if (validateFields(toValidate)){
+                Appointments a = new Appointments(
+                        Appointments.newAppointmentID(),
+                        (String) toValidate[0], // Title
+                        (String) toValidate[1], // Description
+                        (String) toValidate[2], // Location
+                        (String) toValidate[3], // Type
+                        (LocalDateTime) toValidate[4], // Start Time
+                        (LocalDateTime) toValidate[5], // End Time
+                        (Integer) toValidate[6], // Customer ID
+                        (Integer) toValidate[7], // User ID
+                        ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
+                AppointmentsDB.addAppointment(a);
+                clearFields();
+                allAppointments.setAll(AppointmentsDB.getAllAppointments());
+                aptsTable.refresh();
+            }
+        } else {
+            Helpers.WarningMessage("Please remove Appointment ID if you\nwould like to create a new appointment.");
+        }
     }
 
-    public void modifyAppointment(ActionEvent actionEvent) {
+    public void modifyAppointment() throws SQLException {
+        /*Appointments oldA = aptsTable.getSelectionModel().getSelectedItem();
+        Appointments modAppointment = new Appointments(
+                oldA.getAppointmentID(),
+                title_field.getText(),
+                description_field.getText(),
+                location_field.getText(),
+                type_field.getText(),
+                start_field.,
+                end_field.getChronology(),
+                customerIDComboBox.getSelectionModel().getSelectedItem(),
+                userIDComboBox.getSelectionModel().getSelectedItem(),
+                contactComboBox.getSelectionModel().getSelectedItem()
+        );
+        AppointmentsDB.modifyAppointment(modAppointment);
+*/
+        clearFields();
+        allAppointments.setAll(AppointmentsDB.getAllAppointments());
+        aptsTable.refresh();
     }
 
-    public void removeAppointment(ActionEvent actionEvent) {
+    /**
+     * call to AppointmentsDB to delete selected appointment
+     * @throws SQLException SQL exception handler
+     */
+    public void removeAppointment() throws SQLException {
+        if (Helpers.ConfirmationMessage("Are you sure you want to delete this Appointment?")) {
+            if (AppointmentsDB.deleteAppointment(aptsTable.getSelectionModel().getSelectedItem().getAppointmentID())) {
+                allAppointments.setAll(AppointmentsDB.getAllAppointments());
+                clearFields();
+                aptsTable.refresh();
+            }
+        }
     }
 
     /**
@@ -148,13 +251,23 @@ public class appointmentsMenuController implements Initializable {
         type_field.clear();
         start_field.setValue(null);
         end_field.setValue(null);
-        customerID_field.clear();
-        userID_field.clear();
+        customerIDComboBox.getSelectionModel().clearSelection();
+        userIDComboBox.getSelectionModel().clearSelection();
         contactComboBox.getSelectionModel().clearSelection();
-        contactComboBox.getItems().clear();
+        startTimeHour.getSelectionModel().clearSelection();
+        startTimeMin.getSelectionModel().clearSelection();
+        endTimeHour.getSelectionModel().clearSelection();
+        endTimeMin.getSelectionModel().clearSelection();
+        startTimeHour.setPromptText("Hour");
+        startTimeMin.setPromptText("Minute");
+        endTimeHour.setPromptText("Hour");
+        endTimeMin.setPromptText("Minute");
         aptsTable.getSelectionModel().clearSelection();
     }
 
+    private boolean validateFields(Object[] toValidate) {
+        return true;
+    }
 
     /**
      * Return to main menu

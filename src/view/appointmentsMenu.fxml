@@ -7,16 +7,16 @@
 <AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.appointmentsMenuController">
     <TableView fx:id="aptsTable" layoutX="13.0" layoutY="49.0" prefHeight="298.0" prefWidth="870.0">
         <columns>
-            <TableColumn fx:id="aptsTable_ID" editable="false" prefWidth="30" text="ID" />
-            <TableColumn fx:id="aptsTable_Title" prefWidth="100" text="Title" />
-            <TableColumn fx:id="aptsTable_Description" prefWidth="120" text="Description" />
-            <TableColumn fx:id="aptsTable_Location" prefWidth="100" text="Location" />
-            <TableColumn fx:id="aptsTable_Contact" prefWidth="100" text="Contact Name" />
-            <TableColumn fx:id="aptsTable_Type" prefWidth="100" text="Type" />
-            <TableColumn fx:id="aptsTable_Start" prefWidth="80" text="Start Time" />
-            <TableColumn fx:id="aptsTable_End" prefWidth="80" text="End Time" />
-            <TableColumn fx:id="aptsTable_CustomerID" prefWidth="80" text="Customer ID" />
-            <TableColumn fx:id="aptsTable_UserID" prefWidth="80" text="User ID" />
+            <TableColumn fx:id="aptsTable_ID" editable="false" prefWidth="20.0" text="ID" />
+            <TableColumn fx:id="aptsTable_Title" prefWidth="126.33331298828125" text="Title" />
+            <TableColumn fx:id="aptsTable_Description" prefWidth="131.66665649414062" text="Description" />
+            <TableColumn fx:id="aptsTable_Location" prefWidth="96.0" text="Location" />
+            <TableColumn fx:id="aptsTable_Contact" prefWidth="97.3333740234375" text="Contact Name" />
+            <TableColumn fx:id="aptsTable_Type" prefWidth="74.3333740234375" text="Type" />
+            <TableColumn fx:id="aptsTable_Start" prefWidth="99.00006103515625" text="Start Time (UTC)" />
+            <TableColumn fx:id="aptsTable_End" prefWidth="93.6666259765625" text="End Time (UTC)" />
+            <TableColumn fx:id="aptsTable_CustomerID" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="aptsTable_UserID" prefWidth="62.0" text="User ID" />
         </columns>
     </TableView>
     <Label layoutX="14.0" layoutY="23.0" text="Appointment View">
@@ -29,8 +29,8 @@
     <Button fx:id="modifyButton" layoutX="72.0" layoutY="530.0" mnemonicParsing="false" onAction="#modifyAppointment" text="Modify" />
     <Button fx:id="removeButton" layoutX="13.0" layoutY="358.0" mnemonicParsing="false" onAction="#removeAppointment" text="Remove" />
 
-    <Button fx:id="clearButton" layoutX="530.0" layoutY="426.0" mnemonicParsing="false" onAction="#clearFields" text="Clear" />
-    <Button fx:id="returnButton" layoutX="530.0" layoutY="467.0" mnemonicParsing="false" onAction="#previousMenu" text="Return" />
+    <Button fx:id="clearButton" layoutX="701.0" layoutY="426.0" mnemonicParsing="false" onAction="#clearFields" text="Clear" />
+    <Button fx:id="returnButton" layoutX="701.0" layoutY="466.0" mnemonicParsing="false" onAction="#previousMenu" text="Return" />
 
     <TextField fx:id="id_field" layoutX="133.0" layoutY="383.0" prefHeight="25.0" prefWidth="71.0" />
     <TextField fx:id="title_field" layoutX="13.0" layoutY="426.0" prefHeight="25.0" prefWidth="120.0" />
@@ -39,9 +39,9 @@
     <TextField fx:id="type_field" layoutX="339.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
     <ComboBox fx:id="contactComboBox" layoutX="425.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
     <DatePicker fx:id="start_field" layoutX="13.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
-    <DatePicker fx:id="end_field" layoutX="133.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
-    <TextField fx:id="customerID_field" layoutX="253.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" />
-    <TextField fx:id="userID_field" layoutX="339.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" />
+    <DatePicker fx:id="end_field" layoutX="298.0" layoutY="487.0" prefHeight="25.0" prefWidth="120.0" />
+    <ComboBox fx:id="customerIDComboBox" layoutX="511.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
+    <ComboBox fx:id="userIDComboBox" layoutX="597.0" layoutY="426.0" prefHeight="25.0" prefWidth="86.0" />
 
     <Label layoutX="133.0" layoutY="362.0" text="ID (Leave blank to create new appointment)" />
     <Label layoutX="14.0" layoutY="409.0" text="Title" />
@@ -49,9 +49,13 @@
     <Label layoutX="253.0" layoutY="409.0" text="Location" />
     <Label layoutX="339.0" layoutY="409.0" text="Type" />
     <Label layoutX="425.0" layoutY="409.0" text="Contact" />
-    <Label layoutX="14.0" layoutY="470.0" text="Start Time" />
-    <Label layoutX="133.0" layoutY="470.0" text="End Time" />
-    <Label layoutX="253.0" layoutY="470.0" text="Customer ID" />
-    <Label layoutX="339.0" layoutY="470.0" text="User ID" />
+    <Label layoutX="14.0" layoutY="470.0" text="Start Time (Local)" />
+    <Label layoutX="298.0" layoutY="470.0" text="End Time (Local)" />
+    <Label layoutX="511.0" layoutY="409.0" text="Customer ID" />
+    <Label layoutX="597.0" layoutY="409.0" text="User ID" />
+   <ComboBox fx:id="startTimeMin" layoutX="210.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" promptText="Minute" />
+   <ComboBox fx:id="startTimeHour" layoutX="133.0" layoutY="487.0" prefHeight="25.0" prefWidth="78.0" promptText="Hour" />
+   <ComboBox fx:id="endTimeHour" layoutX="418.0" layoutY="487.0" prefHeight="25.0" prefWidth="78.0" promptText="Hour" />
+   <ComboBox fx:id="endTimeMin" layoutX="496.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" promptText="Minute" />
 
 </AnchorPane>

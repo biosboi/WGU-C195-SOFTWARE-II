@@ -110,7 +110,7 @@ public class Appointments {
      * Generates a new ID which is incremented from previous known ID's
      * @return lastMaxId
      */
-    public int newAppointmentID() throws SQLException {
+    public static int newAppointmentID() throws SQLException {
         ObservableList<Appointments> appointmentList = AppointmentsDB.getAllAppointments();
         int lastMaxId = 0;
         for(Appointments a : appointmentList) {

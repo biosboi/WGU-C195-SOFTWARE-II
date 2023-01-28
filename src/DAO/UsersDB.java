@@ -22,7 +22,7 @@ public class UsersDB {
         ResultSet rs = Helpers.DBQuery("SELECT * FROM users");
         while (rs.next()) {
             int userId = rs.getInt("User_ID");
-            String name = rs.getString("Name");
+            String name = rs.getString("User_Name");
             String password = rs.getString("Password");
             Users user = new Users(userId, name, password);
             allUsersList.add(user);
