@@ -29,15 +29,16 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="ADDITIONAL">
+            <Tab text="Country Data">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextArea fx:id="ADDITIONALText" prefHeight="325.0" prefWidth="571.0" />
+                        <TextArea fx:id="countriesText" prefHeight="325.0" prefWidth="571.0" />
                      </children></AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="returnButton" layoutX="533.0" layoutY="11.0" mnemonicParsing="false" onAction="#previousMenu" text="Return" />
    </children>
 </AnchorPane>

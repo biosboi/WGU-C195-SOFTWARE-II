@@ -70,7 +70,9 @@ public class customerMenuController implements Initializable {
 
     /**
      * Init table with customer data, country column initially unfiltered
-     * Puts listener on table so text fields will fill with selected row
+     * Puts listener on table so text fields will fill with selected row.
+     *
+     * There are two lambdas in this function. Both add listeners to combo boxes. One listener is based on the result of the first listener.
      * @param url unused
      * @param resourceBundle unused
      */

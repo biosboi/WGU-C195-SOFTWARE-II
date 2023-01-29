@@ -103,6 +103,12 @@ public class appointmentsMenuController implements Initializable {
     @FXML
     public RadioButton radioWeek;
 
+    /**
+     * The lambda expression in this function adds a listener on the selected appointment in the table.
+     * Upon selection of an appointment, all text fields will fill with the appointment data.
+     * @param url unused
+     * @param resourceBundle unused
+     */
     @Override
      public void initialize(URL url, ResourceBundle resourceBundle) {
         // Initialize Name and object lists for Appointments / Contacts / Customers / Users
@@ -115,24 +121,16 @@ public class appointmentsMenuController implements Initializable {
             allCustomers.setAll(CustomersDB.getAllCustomers());
             allUsers.setAll(UsersDB.getAllUsers());
 
-            for (Contacts c : allContacts) {
-                allContactsNames.add(c.getContactName());
-            }
-            for (Users u : allUsers) {
-                allUsersIDs.add(u.getUserID());
-            }
-            for (Customers c : allCustomers) {
-                allCustomersIDs.add(c.getCustomerID());
-            }
+            for (Contacts c : allContacts) { allContactsNames.add(c.getContactName()); }
+            for (Users u : allUsers) { allUsersIDs.add(u.getUserID()); }
+            for (Customers c : allCustomers) { allCustomersIDs.add(c.getCustomerID()); }
 
             contactComboBox.getItems().addAll(allContactsNames);
             for (Integer i : allUsersIDs) { userIDComboBox.getItems().add(String.valueOf(i)); }
             for (Integer i : allCustomersIDs) { customerIDComboBox.getItems().add(String.valueOf(i)); }
 
-            List<Integer> hours = IntStream.rangeClosed(0, 23)
-                    .boxed().toList();
-            List<Integer> minutes = IntStream.rangeClosed(0, 59)
-                    .boxed().toList();
+            List<Integer> hours = IntStream.rangeClosed(0, 23).boxed().toList();
+            List<Integer> minutes = IntStream.rangeClosed(0, 59).boxed().toList();
 
             startTimeHour.getItems().addAll(hours);
             startTimeMin.getItems().addAll(minutes);
@@ -180,8 +178,13 @@ public class appointmentsMenuController implements Initializable {
                 }
             }
         });
+        radioAll.setSelected(true);
     }
 
+    /**
+     * Creates appointment object based on text field boxes, then executes an add to the database
+     * @throws SQLException SQL exception handler
+     */
     public void addAppointment() throws SQLException {
         if (id_field.getText().isEmpty()){
             List<LocalDateTime> aptTimes = new ArrayList<>(2);
@@ -349,19 +352,45 @@ public class appointmentsMenuController implements Initializable {
     /**
      * Filters appointments list to see all
      */
-    public void radioFilterAll() {
-
+    public void radioFilterAll() throws SQLException {
+        radioMonth.setSelected(false);
+        radioWeek.setSelected(false);
+        allAppointments.setAll(AppointmentsDB.getAllAppointments());
+        aptsTable.setItems(allAppointments);
+        aptsTable.refresh();
     }
 
     /**
      * Filters appointments list to see within month
      */
-    public void radioFilterMonth() {
+    public void radioFilterMonth() throws SQLException {
+        radioAll.setSelected(false);
+        radioWeek.setSelected(false);
+        ObservableList<Appointments> monthApts = FXCollections.observableArrayList();
+        allAppointments.setAll(AppointmentsDB.getAllAppointments());
+        for (Appointments a : allAppointments) {
+            if (a.getAppointmentStart().getMonth().equals(LocalDateTime.now().getMonth())) {
+                monthApts.add(a);
+            }
+        }
+        aptsTable.setItems(monthApts);
+        aptsTable.refresh();
     }
 
     /**
      * Filters appointments list to see within week
      */
-    public void radioFilterWeek() {
+    public void radioFilterWeek() throws SQLException {
+        radioMonth.setSelected(false);
+        radioAll.setSelected(false);
+        ObservableList<Appointments> weekApts = FXCollections.observableArrayList();
+        allAppointments.setAll(AppointmentsDB.getAllAppointments());
+        for (Appointments a : allAppointments) {
+            if (a.getAppointmentStart().getDayOfWeek().equals(LocalDateTime.now().getDayOfWeek())) {
+                weekApts.add(a);
+            }
+        }
+        aptsTable.setItems(weekApts);
+        aptsTable.refresh();
     }
 }
