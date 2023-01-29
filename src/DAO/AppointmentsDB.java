@@ -46,8 +46,8 @@ public class AppointmentsDB {
      * @throws SQLException SQL exception handler
      */
     public static void addAppointment(Appointments apt) throws SQLException {
-        String queryBuild = Appointments.newAppointmentID() + ", " + apt.getTitle() + ", " + apt.getDescription() + ", " + apt.getLocation() + ", " + apt.getType() + ", " + apt.getAppointmentStart() + ", " + apt.getAppointmentEnd() + ", NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
-        Helpers.DBQuery( "INSERT INTO appointments VALUES (" + queryBuild + ");");
+        String queryBuild = Appointments.newAppointmentID() + ", '" + apt.getTitle() + "', '" + apt.getDescription() + "', '" + apt.getLocation() + "', '" + apt.getType() + "', '" + apt.getAppointmentStart() + "', '" + apt.getAppointmentEnd() + "', NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
+        Helpers.DBExec( "INSERT INTO appointments VALUES (" + queryBuild + ");");
     }
 
     /**
@@ -77,7 +77,35 @@ public class AppointmentsDB {
      * @return boolean true if successful, false if failed
      */
     public static boolean deleteAppointment(int apt) throws SQLException {
-        Helpers.DBQuery("DELETE FROM appointments WHERE Appointment_ID =" + apt);
+        Helpers.DBExec("DELETE FROM appointments WHERE Appointment_ID =" + apt);
         return true;
+    }
+
+    /**
+     * @param aptIDs Appointment ID to grab start time with
+     * @return LocalDateTime value of appointment start
+     * @throws SQLException SQL exception handler
+     */
+    public static LocalDateTime getStartTime (Integer aptIDs) throws SQLException {
+        LocalDateTime startTime = null;
+        ResultSet rs = Helpers.DBQuery( "SELECT Start FROM appointments WHERE Appointment_ID = " + aptIDs);
+        while (rs.next()) {
+            startTime = rs.getTimestamp("Start").toLocalDateTime();
+        }
+        return startTime;
+    }
+
+    /**
+     * @param aptIDs Appointment ID to grab end time from
+     * @return LocalDateTime value of appointment end
+     * @throws SQLException SQL exception handler
+     */
+    public static LocalDateTime getEndTime (Integer aptIDs) throws SQLException {
+        LocalDateTime endTime = null;
+        ResultSet rs = Helpers.DBQuery( "SELECT End FROM appointments WHERE Appointment_ID = " + aptIDs);
+        while (rs.next()) {
+            endTime = rs.getTimestamp("End").toLocalDateTime();
+        }
+        return endTime;
     }
 }

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -95,9 +96,15 @@ public class appointmentsMenuController implements Initializable {
     public ComboBox<Integer> endTimeHour;
     @FXML
     public ComboBox<Integer> endTimeMin;
+    @FXML
+    public RadioButton radioAll;
+    @FXML
+    public RadioButton radioMonth;
+    @FXML
+    public RadioButton radioWeek;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Initialize Name and object lists for Appointments / Contacts / Customers / Users
         Helpers.setLocale();
 
@@ -160,7 +167,11 @@ public class appointmentsMenuController implements Initializable {
                     location_field.setText(newA.getLocation());
                     type_field.setText(newA.getType());
                     start_field.setValue(LocalDate.from(newA.getAppointmentStart())); // convert to local time
+                    startTimeHour.setValue(newA.getAppointmentStart().getHour());
+                    startTimeMin.setValue(newA.getAppointmentStart().getMinute());
                     end_field.setValue(LocalDate.from(newA.getAppointmentEnd())); // convert to local time
+                    endTimeHour.setValue(newA.getAppointmentEnd().getHour());
+                    endTimeMin.setValue(newA.getAppointmentEnd().getMinute());
                     customerIDComboBox.setValue((Integer.toString(newA.getCustomerID())));
                     userIDComboBox.setValue(Integer.toString(newA.getUserID()));
                     contactComboBox.setValue(ContactsDB.getContactName(newA.getContactID()));
@@ -173,27 +184,18 @@ public class appointmentsMenuController implements Initializable {
 
     public void addAppointment() throws SQLException {
         if (id_field.getText().isEmpty()){
-            Object[] toValidate = new Object[]{
-                    title_field.getText(),
-                    description_field.getText(),
-                    location_field.getText(),
-                    type_field.getText(),
-                    //start_field.,
-                    //end_field.,
-                    customerIDComboBox.getSelectionModel().getSelectedItem(),
-                    userIDComboBox.getSelectionModel().getSelectedItem()
-            };
-            if (validateFields(toValidate)){
+            List<LocalDateTime> aptTimes = new ArrayList<>(2);
+            if (verifyDateTimes(aptTimes)) {
                 Appointments a = new Appointments(
                         Appointments.newAppointmentID(),
-                        (String) toValidate[0], // Title
-                        (String) toValidate[1], // Description
-                        (String) toValidate[2], // Location
-                        (String) toValidate[3], // Type
-                        (LocalDateTime) toValidate[4], // Start Time
-                        (LocalDateTime) toValidate[5], // End Time
-                        (Integer) toValidate[6], // Customer ID
-                        (Integer) toValidate[7], // User ID
+                        title_field.getText(), // Title
+                        description_field.getText(), // Description
+                        location_field.getText(), // Location
+                        type_field.getText(), // Type
+                        aptTimes.get(0), // Start Time
+                        aptTimes.get(1), // End Time
+                        Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()), // Customer ID
+                        Integer.parseInt(userIDComboBox.getSelectionModel().getSelectedItem()), // User ID
                         ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
                 AppointmentsDB.addAppointment(a);
                 clearFields();
@@ -205,25 +207,29 @@ public class appointmentsMenuController implements Initializable {
         }
     }
 
+    /**
+     * Creates appointment object then feeds attributes into DB execution
+     * @throws SQLException SQL exception handler
+     */
     public void modifyAppointment() throws SQLException {
-        /*Appointments oldA = aptsTable.getSelectionModel().getSelectedItem();
-        Appointments modAppointment = new Appointments(
-                oldA.getAppointmentID(),
-                title_field.getText(),
-                description_field.getText(),
-                location_field.getText(),
-                type_field.getText(),
-                start_field.,
-                end_field.getChronology(),
-                customerIDComboBox.getSelectionModel().getSelectedItem(),
-                userIDComboBox.getSelectionModel().getSelectedItem(),
-                contactComboBox.getSelectionModel().getSelectedItem()
-        );
-        AppointmentsDB.modifyAppointment(modAppointment);
-*/
-        clearFields();
-        allAppointments.setAll(AppointmentsDB.getAllAppointments());
-        aptsTable.refresh();
+        List<LocalDateTime> aptTimes = new ArrayList<>(2);
+        if (verifyDateTimes(aptTimes)) {
+            Appointments a = new Appointments(
+                    Appointments.newAppointmentID(),
+                    title_field.getText(), // Title
+                    description_field.getText(), // Description
+                    location_field.getText(), // Location
+                    type_field.getText(), // Type
+                    aptTimes.get(0), // Start Time
+                    aptTimes.get(1), // End Time
+                    Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()), // Customer ID
+                    Integer.parseInt(userIDComboBox.getSelectionModel().getSelectedItem()), // User ID
+                    ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
+            AppointmentsDB.modifyAppointment(a);
+            clearFields();
+            allAppointments.setAll(AppointmentsDB.getAllAppointments());
+            aptsTable.refresh();
+        }
     }
 
     /**
@@ -258,14 +264,76 @@ public class appointmentsMenuController implements Initializable {
         startTimeMin.getSelectionModel().clearSelection();
         endTimeHour.getSelectionModel().clearSelection();
         endTimeMin.getSelectionModel().clearSelection();
-        startTimeHour.setPromptText("Hour");
-        startTimeMin.setPromptText("Minute");
-        endTimeHour.setPromptText("Hour");
-        endTimeMin.setPromptText("Minute");
         aptsTable.getSelectionModel().clearSelection();
     }
 
-    private boolean validateFields(Object[] toValidate) {
+    /**
+     * @throws SQLException SQL exception handler
+     */
+    private boolean verifyDateTimes(List<LocalDateTime> startAndEnd) throws SQLException {
+        // Pull dates from date pickers
+        LocalDate localDateStart = start_field.getValue();
+        LocalDate localDateEnd = end_field.getValue();
+
+        // Pull hour and minute from combo boxes
+        LocalTime localTimeStart = LocalTime.of(startTimeHour.getValue(), startTimeMin.getValue());
+        LocalTime localTimeEnd = LocalTime.of(endTimeHour.getValue(), endTimeMin.getValue());
+
+        // Combine date and time
+        LocalDateTime fullStart = LocalDateTime.of(localDateStart, localTimeStart);
+        LocalDateTime fullEnd = LocalDateTime.of(localDateEnd, localTimeEnd);
+
+        // Get UTC and business timezones
+        LocalDateTime UTCStart = Helpers.getUTCTime(fullStart);
+        LocalDateTime UTCEnd = Helpers.getUTCTime(fullEnd);
+        LocalDateTime businessStart = Helpers.getBusinessTime(UTCStart);
+        LocalDateTime businessEnd = Helpers.getBusinessTime(UTCEnd);
+
+        LocalTime officeOpen = LocalTime.of(8, 0, 0);
+        LocalTime officeClose = LocalTime.of(22, 0, 0);
+
+        if (businessStart.toLocalTime().isBefore(officeOpen) || businessStart.toLocalTime().isAfter(officeClose) || businessEnd.toLocalTime().isBefore(officeOpen) || businessEnd.toLocalTime().isAfter(officeClose))
+        {
+            Helpers.WarningMessage("Appointment time is outside\n of regular working hours of 8AM - 10PM EST.");
+            return false;
+        }
+
+        if (UTCEnd.isBefore(UTCStart)) {
+            Helpers.WarningMessage("Beginning time must be before ending time");
+            return false;
+        }
+
+        // Check for overlapping appointment
+        List<LocalDateTime> oldAptStartTimes = new ArrayList<>();
+        List<LocalDateTime> oldAptEndTimes = new ArrayList<>();
+        for (Integer a : CustomersDB.getCustomersAppointments(Integer.parseInt(customerIDComboBox.getValue()))) {
+            oldAptStartTimes.add(Helpers.getUTCTime(AppointmentsDB.getStartTime(a)));
+            oldAptEndTimes.add(Helpers.getUTCTime(AppointmentsDB.getEndTime(a)));
+        }
+        // Start Time verification
+        for (LocalDateTime start : oldAptStartTimes) {
+            if (UTCStart.isAfter(start) || UTCStart.isEqual(start)) {
+                for (LocalDateTime end : oldAptEndTimes) {
+                    if (UTCStart.isBefore(end) || UTCStart.isEqual(end)) {
+                        Helpers.WarningMessage("The selected user has an overlapping appointment.");
+                        return false;
+                    }
+                }
+            }
+        }
+        // End Time verification
+        for (LocalDateTime start : oldAptStartTimes) {
+            if (UTCEnd.isBefore(start) || UTCEnd.isEqual(start)) {
+                for (LocalDateTime end : oldAptEndTimes) {
+                    if (UTCEnd.isAfter(end)) {
+                        Helpers.WarningMessage("The selected user has an overlapping appointment.");
+                        return false;
+                    }
+                }
+            }
+        }
+        startAndEnd.add(fullStart);
+        startAndEnd.add(fullEnd);
         return true;
     }
 
@@ -276,5 +344,24 @@ public class appointmentsMenuController implements Initializable {
      */
     public void previousMenu(ActionEvent click) throws IOException {
         Helpers.openMenu(click, "../mainMenu.fxml");
+    }
+
+    /**
+     * Filters appointments list to see all
+     */
+    public void radioFilterAll() {
+
+    }
+
+    /**
+     * Filters appointments list to see within month
+     */
+    public void radioFilterMonth() {
+    }
+
+    /**
+     * Filters appointments list to see within week
+     */
+    public void radioFilterWeek() {
     }
 }

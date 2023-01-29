@@ -1,5 +1,6 @@
 package controllers;
 
+import DAO.AppointmentsDB;
 import DAO.UsersDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,9 +17,13 @@ import main.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Login Menu Controller
@@ -86,6 +91,19 @@ public class loginController implements Initializable {
             Logger.log(username, false);
             Helpers.WarningMessage(emptyCreds);
         } else if (UsersDB.loginVerification(username, password) > -1) {
+            // Success
+            // Check if appointment within 15 minutes. Checks local time of appointment
+            List<Integer> userApts = UsersDB.getUserAppointments(UsersDB.getUserID(username));
+            Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+            for (Integer a : userApts) {
+                Timestamp start = Timestamp.valueOf(Helpers.getLocalTime(AppointmentsDB.getStartTime(a)));
+                if (Math.abs(start.getTime() - now.getTime()) < TimeUnit.MINUTES.toMillis(15)) {
+                    String msg = "You have an appointment within 15 minutes!\nID: " + a + "\nTime: " + start.getTime();
+                    Helpers.WarningMessage(msg);
+                } else {
+                    Helpers.WarningMessage("There are no upcoming appointments.");
+                }
+            }
             Logger.log(username, true);
             Helpers.openMenu(click, "../view/mainMenu.fxml");
         } else {

@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.reportMenuController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.reportMenuController">
+   <children>
+      <Label layoutX="14.0" layoutY="14.0" text="Reports">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
+      <TabPane layoutX="14.0" layoutY="33.0" prefHeight="353.0" prefWidth="571.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Customer Appointments">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="customerText" prefHeight="327.0" prefWidth="571.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Contact Schedule">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="contactsText" prefHeight="326.0" prefWidth="571.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="ADDITIONAL">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="ADDITIONALText" prefHeight="325.0" prefWidth="571.0" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
 </AnchorPane>

@@ -7,6 +7,8 @@ import model.Users;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Users Database Accessor
@@ -51,7 +53,7 @@ public class UsersDB {
      */
     public static int getUserID(String UserName) throws SQLException {
         int userId = 0;
-        ResultSet rs = Helpers.DBQuery("SELECT User_ID FROM users WHERE User_Name = " + UserName);
+        ResultSet rs = Helpers.DBQuery("SELECT User_ID FROM users WHERE User_Name = '" + UserName + "'");
         while (rs.next()) {
             userId = rs.getInt("User_ID");
         }
@@ -72,5 +74,20 @@ public class UsersDB {
             userID = rs.getInt("User_ID");
         }
         return Math.max(userID, -1);
+    }
+
+    /**
+     * Returns list of appointments in form of appointment IDs based on given user ID
+     * @param userID user ID to select appointments of
+     * @return Returns Integer list of appointment IDs
+     * @throws SQLException SQL exception handler
+     */
+    public static List<Integer> getUserAppointments(int userID) throws SQLException {
+        List<Integer> customerAppointmentList = new ArrayList<>();
+        ResultSet rs = Helpers.DBQuery("SELECT Appointment_ID FROM appointments WHERE User_ID = " + userID);
+        while (rs.next()) {
+            customerAppointmentList.add(rs.getInt("Appointment_ID"));
+        }
+        return customerAppointmentList;
     }
 }

@@ -53,9 +53,16 @@
     <Label layoutX="298.0" layoutY="470.0" text="End Time (Local)" />
     <Label layoutX="511.0" layoutY="409.0" text="Customer ID" />
     <Label layoutX="597.0" layoutY="409.0" text="User ID" />
-   <ComboBox fx:id="startTimeMin" layoutX="210.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" promptText="Minute" />
-   <ComboBox fx:id="startTimeHour" layoutX="133.0" layoutY="487.0" prefHeight="25.0" prefWidth="78.0" promptText="Hour" />
-   <ComboBox fx:id="endTimeHour" layoutX="418.0" layoutY="487.0" prefHeight="25.0" prefWidth="78.0" promptText="Hour" />
-   <ComboBox fx:id="endTimeMin" layoutX="496.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" promptText="Minute" />
+   <ComboBox fx:id="startTimeMin" layoutX="210.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" />
+   <ComboBox fx:id="startTimeHour" layoutX="133.0" layoutY="487.0" prefHeight="25.0" prefWidth="78.0" />
+   <ComboBox fx:id="endTimeHour" layoutX="418.0" layoutY="487.0" prefHeight="25.0" prefWidth="78.0" />
+   <ComboBox fx:id="endTimeMin" layoutX="496.0" layoutY="487.0" prefHeight="25.0" prefWidth="86.0" />
+   <Label layoutX="418.0" layoutY="470.0" text="Hour" />
+   <Label layoutX="211.0" layoutY="470.0" text="Minute" />
+   <Label layoutX="133.0" layoutY="470.0" text="Hour" />
+   <Label layoutX="497.0" layoutY="470.0" text="Minute" />
+   <RadioButton fx:id="radioAll" layoutX="439.0" layoutY="24.0" mnemonicParsing="false" onAction="#radioFilterAll" text="All" />
+   <RadioButton fx:id="radioMonth" layoutX="364.0" layoutY="24.0" mnemonicParsing="false" onAction="#radioFilterMonth" text="Month" />
+   <RadioButton fx:id="radioWeek" layoutX="298.0" layoutY="24.0" mnemonicParsing="false" onAction="#radioFilterWeek" text="Week" />
 
 </AnchorPane>

@@ -52,7 +52,7 @@ public class ContactsDB {
      */
     public static int getContactId(String contactName) throws SQLException  {
         int contactId = 0;
-        ResultSet rs = Helpers.DBQuery("SELECT Contact_ID FROM contacts WHERE Contact_Name = " + contactName);
+        ResultSet rs = Helpers.DBQuery("SELECT Contact_ID FROM contacts WHERE Contact_Name = '" + contactName + "'");
         while (rs.next()) {
             contactId = rs.getInt("Contact_ID");
         }
