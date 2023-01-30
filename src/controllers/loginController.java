@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import main.Helpers;
 import main.JDBC;
 import main.Logger;
+import model.Users;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,6 +54,7 @@ public class loginController implements Initializable {
     private String emptyCreds = "";
     @FXML
     private String badCreds = "";
+    public static Users loggedIn;
 
     /**
      * Initialize data to be used in menu
@@ -90,8 +92,10 @@ public class loginController implements Initializable {
         if (username.isEmpty() || password.isEmpty()) {
             Logger.log(username, false);
             Helpers.WarningMessage(emptyCreds);
-        } else if (UsersDB.loginVerification(username, password) > -1) {
-            // Success
+        } else if (UsersDB.loginVerification(username, password) > -1) { // Success
+            // Store logged-in user for later use
+            loggedIn = new Users(UsersDB.getUserID(username), username, password);
+
             // Check if appointment within 15 minutes. Checks local time of appointment
             List<Integer> userApts = UsersDB.getUserAppointments(UsersDB.getUserID(username));
             Timestamp now = Timestamp.valueOf(LocalDateTime.now());
@@ -104,12 +108,21 @@ public class loginController implements Initializable {
                     Helpers.WarningMessage("There are no upcoming appointments.");
                 }
             }
+
+            // Log and continue
             Logger.log(username, true);
             Helpers.openMenu(click, "../view/mainMenu.fxml");
         } else {
             Logger.log(username, false);
             Helpers.WarningMessage(badCreds);
         }
+    }
+
+    /**
+     * Retrieve Users object of user that has logged in successfully.
+     */
+    public static Users getLoggedIn() {
+        return loggedIn;
     }
 
     /**

@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.Helpers;
 import model.Customers;
+import controllers.loginController;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +41,7 @@ public class CustomersDB {
      * @throws SQLException SQL exception handler
      */
     public static void addCustomer(Customers c) throws SQLException {
-        String queryBuild = c.getCustomerID() + ", '" + c.getCustomerName() + "', '" + c.getAddress() + "', '" + c.getPostalCode() + "', '" + c.getPhone() + "', NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + c.getDivisionID();
+        String queryBuild = c.getCustomerID() + ", '" + c.getCustomerName() + "', '" + c.getAddress() + "', '" + c.getPostalCode() + "', '" + c.getPhone() + "', NOW(),'" + loginController.getLoggedIn().getUserName() + "', NOW(),'" + loginController.getLoggedIn().getUserName() + "', " + c.getDivisionID();
         Helpers.DBExec("INSERT INTO customers VALUES (" + queryBuild + ");");
     }
 
@@ -55,8 +56,8 @@ public class CustomersDB {
                         "', Address = '" + c.getAddress() +
                         "', Postal_Code = '" + c.getPostalCode() +
                         "', Phone = '" + c.getPhone() +
-                        "', Last_Update = NOW(), Last_Updated_By = CURRENT_USER" +
-                        ", Division_ID = " + c.getDivisionID() +
+                        "', Last_Update = NOW(), Last_Updated_By = '" + loginController.getLoggedIn().getUserName() +
+                        "', Division_ID = " + c.getDivisionID() +
                         " WHERE Customer_ID = " + c.getCustomerID()
         );
     }

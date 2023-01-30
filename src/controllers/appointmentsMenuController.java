@@ -155,7 +155,7 @@ public class appointmentsMenuController implements Initializable {
         aptsTable_CustomerID.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         aptsTable_UserID.setCellValueFactory(new PropertyValueFactory<>("userID"));
 
-        // Add listener to table to update text fields on selection
+        // Add lambda listener to table to update text fields on selection
         aptsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldA, newA) -> {
             if (newA != null) {
                 try {
@@ -164,12 +164,12 @@ public class appointmentsMenuController implements Initializable {
                     description_field.setText(newA.getDescription());
                     location_field.setText(newA.getLocation());
                     type_field.setText(newA.getType());
-                    start_field.setValue(LocalDate.from(newA.getAppointmentStart())); // convert to local time
-                    startTimeHour.setValue(newA.getAppointmentStart().getHour());
-                    startTimeMin.setValue(newA.getAppointmentStart().getMinute());
-                    end_field.setValue(LocalDate.from(newA.getAppointmentEnd())); // convert to local time
-                    endTimeHour.setValue(newA.getAppointmentEnd().getHour());
-                    endTimeMin.setValue(newA.getAppointmentEnd().getMinute());
+                    start_field.setValue(LocalDate.from(Helpers.getLocalTime(newA.getAppointmentStart()))); // convert to local time
+                    startTimeHour.setValue(Helpers.getLocalTime(newA.getAppointmentStart()).getHour());
+                    startTimeMin.setValue(Helpers.getLocalTime(newA.getAppointmentStart()).getMinute());
+                    end_field.setValue(LocalDate.from(Helpers.getLocalTime(newA.getAppointmentEnd()))); // convert to local time
+                    endTimeHour.setValue(Helpers.getLocalTime(newA.getAppointmentEnd()).getHour());
+                    endTimeMin.setValue(Helpers.getLocalTime(newA.getAppointmentEnd()).getMinute());
                     customerIDComboBox.setValue((Integer.toString(newA.getCustomerID())));
                     userIDComboBox.setValue(Integer.toString(newA.getUserID()));
                     contactComboBox.setValue(ContactsDB.getContactName(newA.getContactID()));
@@ -240,8 +240,9 @@ public class appointmentsMenuController implements Initializable {
      * @throws SQLException SQL exception handler
      */
     public void removeAppointment() throws SQLException {
-        if (Helpers.ConfirmationMessage("Are you sure you want to delete this Appointment?")) {
-            if (AppointmentsDB.deleteAppointment(aptsTable.getSelectionModel().getSelectedItem().getAppointmentID())) {
+        Appointments selected = aptsTable.getSelectionModel().getSelectedItem();
+        if (Helpers.ConfirmationMessage("Are you sure you want to delete this Appointment?" + "\nID: " + selected.getAppointmentID() + "\nType: " + selected.getType())) {
+            if (AppointmentsDB.deleteAppointment(selected.getAppointmentID())) {
                 allAppointments.setAll(AppointmentsDB.getAllAppointments());
                 clearFields();
                 aptsTable.refresh();
@@ -369,7 +370,7 @@ public class appointmentsMenuController implements Initializable {
         ObservableList<Appointments> monthApts = FXCollections.observableArrayList();
         allAppointments.setAll(AppointmentsDB.getAllAppointments());
         for (Appointments a : allAppointments) {
-            if (a.getAppointmentStart().getMonth().equals(LocalDateTime.now().getMonth())) {
+            if (a.getAppointmentStart().isBefore(LocalDateTime.now().plusMonths(1)) && a.getAppointmentStart().isAfter(LocalDateTime.now())) {
                 monthApts.add(a);
             }
         }
@@ -386,7 +387,7 @@ public class appointmentsMenuController implements Initializable {
         ObservableList<Appointments> weekApts = FXCollections.observableArrayList();
         allAppointments.setAll(AppointmentsDB.getAllAppointments());
         for (Appointments a : allAppointments) {
-            if (a.getAppointmentStart().getDayOfWeek().equals(LocalDateTime.now().getDayOfWeek())) {
+            if (a.getAppointmentStart().isBefore(LocalDateTime.now().plusWeeks(1)) && a.getAppointmentStart().isAfter(LocalDateTime.now())) {
                 weekApts.add(a);
             }
         }

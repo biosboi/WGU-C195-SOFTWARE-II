@@ -1,5 +1,6 @@
 package DAO;
 
+import controllers.loginController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.Helpers;
@@ -46,7 +47,7 @@ public class AppointmentsDB {
      * @throws SQLException SQL exception handler
      */
     public static void addAppointment(Appointments apt) throws SQLException {
-        String queryBuild = Appointments.newAppointmentID() + ", '" + apt.getTitle() + "', '" + apt.getDescription() + "', '" + apt.getLocation() + "', '" + apt.getType() + "', '" + apt.getAppointmentStart() + "', '" + apt.getAppointmentEnd() + "', NOW(), CURRENT_USER, NOW(), CURRENT_USER" + ", " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
+        String queryBuild = Appointments.newAppointmentID() + ", '" + apt.getTitle() + "', '" + apt.getDescription() + "', '" + apt.getLocation() + "', '" + apt.getType() + "', '" + apt.getAppointmentStart() + "', '" + apt.getAppointmentEnd() + "', NOW(),'" + loginController.getLoggedIn().getUserName() + "', NOW(),'" + loginController.getLoggedIn().getUserName() + "', " + apt.getCustomerID() + ", " + apt.getUserID() + ", " + apt.getContactID();
         Helpers.DBExec( "INSERT INTO appointments VALUES (" + queryBuild + ");");
     }
 
@@ -63,8 +64,8 @@ public class AppointmentsDB {
                         "', Type = '" + apt.getType() +
                         "', Start = '" + apt.getAppointmentStart() +
                         "', End = '" + apt.getAppointmentEnd() +
-                        "', Last_Update = NOW(), Last_Updated_By = CURRENT_USER" +
-                        ", Customer_ID = " + apt.getCustomerID() +
+                        "', Last_Update = NOW(), Last_Updated_By = '" + loginController.getLoggedIn().getUserName() +
+                        "', Customer_ID = " + apt.getCustomerID() +
                         ", User_ID = " + apt.getUserID() +
                         ", Contact_ID = " + apt.getContactID() +
                         " WHERE Customer_ID = " + apt.getCustomerID()
