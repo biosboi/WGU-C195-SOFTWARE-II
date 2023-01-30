@@ -1,7 +1,7 @@
 package controllers;
 
-import DAO.AppointmentsDB;
-import DAO.UsersDB;
+import DB_access.AppointmentsDB;
+import DB_access.UsersDB;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

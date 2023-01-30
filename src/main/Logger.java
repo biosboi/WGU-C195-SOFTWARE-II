@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Instant;
 
+/**
+ * @author William Nathan
+ * Logs login attempts in login_activity.txt file
+ */
 public class Logger {
     private static final String FILENAME = "login_activity.txt";
 

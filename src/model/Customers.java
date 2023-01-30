@@ -1,7 +1,7 @@
 package model;
 
-import DAO.CustomersDB;
-import DAO.FirstLevelDivisionsDB;
+import DB_access.CustomersDB;
+import DB_access.FirstLevelDivisionsDB;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;

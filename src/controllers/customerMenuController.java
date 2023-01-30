@@ -1,8 +1,8 @@
 package controllers;
 
-import DAO.CountriesDB;
-import DAO.CustomersDB;
-import DAO.FirstLevelDivisionsDB;
+import DB_access.CountriesDB;
+import DB_access.CustomersDB;
+import DB_access.FirstLevelDivisionsDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +23,10 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author William Nathan
+ * Customer menu controller
+ */
 public class customerMenuController implements Initializable {
     private final ObservableList<Customers> allCustomers = FXCollections.observableArrayList();
     private final ObservableList<Countries> allCountries = FXCollections.observableArrayList();

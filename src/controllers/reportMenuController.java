@@ -1,7 +1,7 @@
 package controllers;
 
-import DAO.ContactsDB;
-import DAO.CountriesDB;
+import DB_access.ContactsDB;
+import DB_access.CountriesDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +20,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+/**
+ * @author William Nathan
+ * Report menu controller. Generates report data and displays in text view.
+ */
 public class reportMenuController implements Initializable {
     private ObservableList<Appointments> allAppointments = FXCollections.observableArrayList();
     private ObservableList<Contacts> allContacts = FXCollections.observableArrayList();

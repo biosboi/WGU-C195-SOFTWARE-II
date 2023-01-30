@@ -1,9 +1,9 @@
 package controllers;
 
-import DAO.AppointmentsDB;
-import DAO.ContactsDB;
-import DAO.CustomersDB;
-import DAO.UsersDB;
+import DB_access.AppointmentsDB;
+import DB_access.ContactsDB;
+import DB_access.CustomersDB;
+import DB_access.UsersDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,6 +28,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
+/**
+ * @author William Nathan
+ * Appointments menu controller
+ */
 public class appointmentsMenuController implements Initializable {
     private final ObservableList<Appointments> allAppointments = FXCollections.observableArrayList();
     private final ObservableList<Contacts> allContacts = FXCollections.observableArrayList();

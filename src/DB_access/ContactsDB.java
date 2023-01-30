@@ -1,4 +1,4 @@
-package DAO;
+package DB_access;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

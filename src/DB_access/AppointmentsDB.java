@@ -1,4 +1,4 @@
-package DAO;
+package DB_access;
 
 import controllers.loginController;
 import javafx.collections.FXCollections;

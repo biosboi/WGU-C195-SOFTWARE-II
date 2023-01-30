@@ -1,7 +1,7 @@
 package model;
 
-import DAO.AppointmentsDB;
-import DAO.ContactsDB;
+import DB_access.AppointmentsDB;
+import DB_access.ContactsDB;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -27,6 +27,7 @@ public class Appointments {
     public int contactID;
     public String contactName;
 
+
     /**
      * @param appointmentID PK
      * @param title Title of appointment
@@ -37,6 +38,7 @@ public class Appointments {
      * @param customerID FK
      * @param userID FK
      * @param contactID FK
+     * @throws SQLException SQL exception handler
      */
     public Appointments (int appointmentID, String title, String description, String location, String type, LocalDateTime appointmentStart, LocalDateTime appointmentEnd, int customerID, int userID, int contactID) throws SQLException {
         this.appointmentID = appointmentID;

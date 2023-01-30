@@ -10,6 +10,7 @@ import java.util.Objects;
 
 /**
  * @author William Nathan
+ * Generates login page
  */
 public class Main extends Application {
 
