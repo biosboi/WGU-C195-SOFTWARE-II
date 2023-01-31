@@ -340,8 +340,8 @@ public class appointmentsMenuController implements Initializable {
                 }
             }
         }
-        startAndEnd.add(fullStart);
-        startAndEnd.add(fullEnd);
+        startAndEnd.add(UTCStart);
+        startAndEnd.add(UTCEnd);
         return true;
     }
 

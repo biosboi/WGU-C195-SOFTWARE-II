@@ -85,6 +85,7 @@ public class reportMenuController implements Initializable {
             contactIDs.add(c.getContactID());
         }
         for (Integer i : contactIDs) {
+            contactsText.appendText("Appointments for: " + ContactsDB.getContactName(i) + "\n");
             ResultSet rs = Helpers.DBQuery("SELECT Appointment_ID,Title,Type,Description,Start,End,Customer_ID FROM appointments WHERE Contact_ID = " + i);
             while (rs.next()) {
                 String appointmentID = "Appointment_ID: " + rs.getString("Appointment_ID");

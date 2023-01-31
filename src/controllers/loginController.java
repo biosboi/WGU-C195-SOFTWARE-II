@@ -97,16 +97,19 @@ public class loginController implements Initializable {
             loggedIn = new Users(UsersDB.getUserID(username), username, password);
 
             // Check if appointment within 15 minutes. Checks local time of appointment
+            boolean late = false;
             List<Integer> userApts = UsersDB.getUserAppointments(UsersDB.getUserID(username));
             Timestamp now = Timestamp.valueOf(LocalDateTime.now());
             for (Integer a : userApts) {
                 Timestamp start = Timestamp.valueOf(Helpers.getLocalTime(AppointmentsDB.getStartTime(a)));
                 if (Math.abs(start.getTime() - now.getTime()) < TimeUnit.MINUTES.toMillis(15)) {
-                    String msg = "You have an appointment within 15 minutes!\nID: " + a + "\nTime: " + start.getTime();
+                    late = true;
+                    String msg = "You have an appointment within 15 minutes!\nID: " + a + "\nTime: " + Helpers.getLocalTime(AppointmentsDB.getStartTime(a));
                     Helpers.WarningMessage(msg);
-                } else {
-                    Helpers.WarningMessage("There are no upcoming appointments.");
                 }
+            }
+            if (!late) {
+                Helpers.WarningMessage("There are no upcoming appointments.");
             }
 
             // Log and continue
