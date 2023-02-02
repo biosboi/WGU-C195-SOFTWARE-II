@@ -199,8 +199,8 @@ public class appointmentsMenuController implements Initializable {
                         description_field.getText(), // Description
                         location_field.getText(), // Location
                         type_field.getText(), // Type
-                        aptTimes.get(0), // Start Time
-                        aptTimes.get(1), // End Time
+                        Helpers.getUTCTime(aptTimes.get(0)), // Start Time
+                        Helpers.getUTCTime(aptTimes.get(1)), // End Time
                         Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()), // Customer ID
                         Integer.parseInt(userIDComboBox.getSelectionModel().getSelectedItem()), // User ID
                         ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
@@ -227,8 +227,8 @@ public class appointmentsMenuController implements Initializable {
                     description_field.getText(), // Description
                     location_field.getText(), // Location
                     type_field.getText(), // Type
-                    aptTimes.get(0), // Start Time
-                    aptTimes.get(1), // End Time
+                    Helpers.getUTCTime(aptTimes.get(0)), // Start Time
+                    Helpers.getUTCTime(aptTimes.get(1)), // End Time
                     Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()), // Customer ID
                     Integer.parseInt(userIDComboBox.getSelectionModel().getSelectedItem()), // User ID
                     ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
