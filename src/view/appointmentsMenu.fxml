@@ -8,14 +8,14 @@
     <TableView fx:id="aptsTable" layoutX="13.0" layoutY="49.0" prefHeight="298.0" prefWidth="870.0">
         <columns>
             <TableColumn fx:id="aptsTable_ID" editable="false" prefWidth="20.0" text="ID" />
-            <TableColumn fx:id="aptsTable_Title" prefWidth="126.33331298828125" text="Title" />
-            <TableColumn fx:id="aptsTable_Description" prefWidth="131.66665649414062" text="Description" />
-            <TableColumn fx:id="aptsTable_Location" prefWidth="96.0" text="Location" />
-            <TableColumn fx:id="aptsTable_Contact" prefWidth="97.3333740234375" text="Contact Name" />
-            <TableColumn fx:id="aptsTable_Type" prefWidth="74.3333740234375" text="Type" />
-            <TableColumn fx:id="aptsTable_Start" prefWidth="99.00006103515625" text="Start Time (UTC)" />
-            <TableColumn fx:id="aptsTable_End" prefWidth="93.6666259765625" text="End Time (UTC)" />
-            <TableColumn fx:id="aptsTable_CustomerID" prefWidth="75.0" text="Customer ID" />
+            <TableColumn fx:id="aptsTable_Title" prefWidth="106.66668319702148" text="Title" />
+            <TableColumn fx:id="aptsTable_Description" prefWidth="136.6667022705078" text="Description" />
+            <TableColumn fx:id="aptsTable_Location" prefWidth="88.99993896484375" text="Location" />
+            <TableColumn fx:id="aptsTable_Contact" prefWidth="103.3333740234375" text="Contact Name" />
+            <TableColumn fx:id="aptsTable_Type" prefWidth="60.999969482421875" text="Type" />
+            <TableColumn fx:id="aptsTable_Start" prefWidth="107.0" text="Start Time (Local)" />
+            <TableColumn fx:id="aptsTable_End" prefWidth="115.0" text="End Time (Local)" />
+            <TableColumn fx:id="aptsTable_CustomerID" prefWidth="79.3333740234375" text="Customer ID" />
             <TableColumn fx:id="aptsTable_UserID" prefWidth="62.0" text="User ID" />
         </columns>
     </TableView>

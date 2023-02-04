@@ -144,6 +144,10 @@ public class appointmentsMenuController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        for (Appointments a : allAppointments) {
+            a.appointmentStart = Helpers.getLocalTime(a.getAppointmentStart());
+            a.appointmentEnd = Helpers.getLocalTime(a.getAppointmentEnd());
+        }
 
         aptsTable.setItems(allAppointments);
         aptsTable.refresh();
@@ -168,12 +172,12 @@ public class appointmentsMenuController implements Initializable {
                     description_field.setText(newA.getDescription());
                     location_field.setText(newA.getLocation());
                     type_field.setText(newA.getType());
-                    start_field.setValue(LocalDate.from(Helpers.getLocalTime(newA.getAppointmentStart()))); // convert to local time
-                    startTimeHour.setValue(Helpers.getLocalTime(newA.getAppointmentStart()).getHour());
-                    startTimeMin.setValue(Helpers.getLocalTime(newA.getAppointmentStart()).getMinute());
-                    end_field.setValue(LocalDate.from(Helpers.getLocalTime(newA.getAppointmentEnd()))); // convert to local time
-                    endTimeHour.setValue(Helpers.getLocalTime(newA.getAppointmentEnd()).getHour());
-                    endTimeMin.setValue(Helpers.getLocalTime(newA.getAppointmentEnd()).getMinute());
+                    start_field.setValue(LocalDate.from(newA.getAppointmentStart())); // convert to local time
+                    startTimeHour.setValue(newA.getAppointmentStart().getHour());
+                    startTimeMin.setValue(newA.getAppointmentStart().getMinute());
+                    end_field.setValue(LocalDate.from(newA.getAppointmentEnd())); // convert to local time
+                    endTimeHour.setValue(newA.getAppointmentEnd().getHour());
+                    endTimeMin.setValue(newA.getAppointmentEnd().getMinute());
                     customerIDComboBox.setValue((Integer.toString(newA.getCustomerID())));
                     userIDComboBox.setValue(Integer.toString(newA.getUserID()));
                     contactComboBox.setValue(ContactsDB.getContactName(newA.getContactID()));
@@ -199,14 +203,18 @@ public class appointmentsMenuController implements Initializable {
                         description_field.getText(), // Description
                         location_field.getText(), // Location
                         type_field.getText(), // Type
-                        Helpers.getUTCTime(aptTimes.get(0)), // Start Time
-                        Helpers.getUTCTime(aptTimes.get(1)), // End Time
+                        aptTimes.get(0), // Start Time
+                        aptTimes.get(1), // End Time
                         Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()), // Customer ID
                         Integer.parseInt(userIDComboBox.getSelectionModel().getSelectedItem()), // User ID
                         ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
                 AppointmentsDB.addAppointment(a);
                 clearFields();
                 allAppointments.setAll(AppointmentsDB.getAllAppointments());
+                for (Appointments apt : allAppointments) {
+                    apt.appointmentStart = Helpers.getLocalTime(apt.getAppointmentStart());
+                    apt.appointmentEnd = Helpers.getLocalTime(apt.getAppointmentEnd());
+                }
                 aptsTable.refresh();
             }
         } else {
@@ -222,19 +230,23 @@ public class appointmentsMenuController implements Initializable {
         List<LocalDateTime> aptTimes = new ArrayList<>(2);
         if (verifyDateTimes(aptTimes)) {
             Appointments a = new Appointments(
-                    Appointments.newAppointmentID(),
+                    aptsTable.getSelectionModel().getSelectedItem().getAppointmentID(),
                     title_field.getText(), // Title
                     description_field.getText(), // Description
                     location_field.getText(), // Location
                     type_field.getText(), // Type
-                    Helpers.getUTCTime(aptTimes.get(0)), // Start Time
-                    Helpers.getUTCTime(aptTimes.get(1)), // End Time
+                    aptTimes.get(0), // Start Time
+                    aptTimes.get(1), // End Time
                     Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()), // Customer ID
                     Integer.parseInt(userIDComboBox.getSelectionModel().getSelectedItem()), // User ID
                     ContactsDB.getContactId(contactComboBox.getSelectionModel().getSelectedItem())); // Contact ID
             AppointmentsDB.modifyAppointment(a);
             clearFields();
             allAppointments.setAll(AppointmentsDB.getAllAppointments());
+            for (Appointments apt : allAppointments) {
+                apt.appointmentStart = Helpers.getLocalTime(apt.getAppointmentStart());
+                apt.appointmentEnd = Helpers.getLocalTime(apt.getAppointmentEnd());
+            }
             aptsTable.refresh();
         }
     }
@@ -330,10 +342,10 @@ public class appointmentsMenuController implements Initializable {
             }
         }
         // End Time verification
-        for (LocalDateTime start : oldAptStartTimes) {
-            if (UTCEnd.isBefore(start) || UTCEnd.isEqual(start)) {
+        for (LocalDateTime start : oldAptEndTimes) {
+            if (UTCEnd.isAfter(start) || UTCEnd.isEqual(start)) {
                 for (LocalDateTime end : oldAptEndTimes) {
-                    if (UTCEnd.isAfter(end)) {
+                    if (UTCEnd.isBefore(end)) {
                         Helpers.WarningMessage("The selected user has an overlapping appointment.");
                         return false;
                     }

@@ -68,7 +68,7 @@ public class AppointmentsDB {
                         "', Customer_ID = " + apt.getCustomerID() +
                         ", User_ID = " + apt.getUserID() +
                         ", Contact_ID = " + apt.getContactID() +
-                        " WHERE Customer_ID = " + apt.getCustomerID()
+                        " WHERE Appointment_ID = " + apt.getAppointmentID()
         );
     }
 
