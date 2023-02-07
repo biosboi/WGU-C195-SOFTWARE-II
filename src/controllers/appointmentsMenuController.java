@@ -19,7 +19,9 @@ import model.Users;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -144,10 +146,6 @@ public class appointmentsMenuController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for (Appointments a : allAppointments) {
-            a.appointmentStart = Helpers.getLocalTime(a.getAppointmentStart());
-            a.appointmentEnd = Helpers.getLocalTime(a.getAppointmentEnd());
-        }
 
         aptsTable.setItems(allAppointments);
         aptsTable.refresh();
@@ -212,8 +210,8 @@ public class appointmentsMenuController implements Initializable {
                 clearFields();
                 allAppointments.setAll(AppointmentsDB.getAllAppointments());
                 for (Appointments apt : allAppointments) {
-                    apt.appointmentStart = Helpers.getLocalTime(apt.getAppointmentStart());
-                    apt.appointmentEnd = Helpers.getLocalTime(apt.getAppointmentEnd());
+                    apt.appointmentStart = apt.getAppointmentStart();
+                    apt.appointmentEnd = apt.getAppointmentEnd();
                 }
                 aptsTable.refresh();
             }
@@ -244,8 +242,8 @@ public class appointmentsMenuController implements Initializable {
             clearFields();
             allAppointments.setAll(AppointmentsDB.getAllAppointments());
             for (Appointments apt : allAppointments) {
-                apt.appointmentStart = Helpers.getLocalTime(apt.getAppointmentStart());
-                apt.appointmentEnd = Helpers.getLocalTime(apt.getAppointmentEnd());
+                apt.appointmentStart = apt.getAppointmentStart();
+                apt.appointmentEnd = apt.getAppointmentEnd();
             }
             aptsTable.refresh();
         }
@@ -323,35 +321,18 @@ public class appointmentsMenuController implements Initializable {
             return false;
         }
 
-        // Check for overlapping appointment
-        List<LocalDateTime> oldAptStartTimes = new ArrayList<>();
-        List<LocalDateTime> oldAptEndTimes = new ArrayList<>();
-        for (Integer a : CustomersDB.getCustomersAppointments(Integer.parseInt(customerIDComboBox.getValue()))) {
-            oldAptStartTimes.add(Helpers.getUTCTime(AppointmentsDB.getStartTime(a)));
-            oldAptEndTimes.add(Helpers.getUTCTime(AppointmentsDB.getEndTime(a)));
-        }
-        // Start Time verification
-        for (LocalDateTime start : oldAptStartTimes) {
-            if (UTCStart.isAfter(start) || UTCStart.isEqual(start)) {
-                for (LocalDateTime end : oldAptEndTimes) {
-                    if (UTCStart.isBefore(end) || UTCStart.isEqual(end)) {
-                        Helpers.WarningMessage("The selected user has an overlapping appointment.");
-                        return false;
-                    }
-                }
+        // Appointment overlap check. Query verifies if start or end times intersect with any other appointments under the same customer.
+        ResultSet rs = Helpers.DBQuery("SELECT COUNT(*) FROM appointments WHERE Customer_ID = " + Integer.parseInt(customerIDComboBox.getSelectionModel().getSelectedItem()) +
+                                       " AND (( Start >= '" + Timestamp.valueOf(UTCStart) + "' AND Start <= '" +  Timestamp.valueOf(UTCEnd) +
+                                       "') OR ( End <= '" + Timestamp.valueOf(UTCEnd)  + "' AND End >= '" + Timestamp.valueOf(UTCStart) +
+                                       "' )) AND Appointment_ID <> " + (id_field.getText().isEmpty() ? 0 : Integer.parseInt(id_field.getText())));
+        while (rs.next()) {
+            if (rs.getInt(1) > 0) {
+                Helpers.WarningMessage("The selected user has an overlapping appointment.");
+                return false;
             }
         }
-        // End Time verification
-        for (LocalDateTime start : oldAptEndTimes) {
-            if (UTCEnd.isAfter(start) || UTCEnd.isEqual(start)) {
-                for (LocalDateTime end : oldAptEndTimes) {
-                    if (UTCEnd.isBefore(end)) {
-                        Helpers.WarningMessage("The selected user has an overlapping appointment.");
-                        return false;
-                    }
-                }
-            }
-        }
+
         startAndEnd.add(UTCStart);
         startAndEnd.add(UTCEnd);
         return true;
